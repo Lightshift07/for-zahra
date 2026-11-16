@@ -23,7 +23,7 @@ Tone: warm, soft, personal, calm. It's a love letter, not a product. No analytic
 | Content | Markdown + YAML frontmatter, parsed **at build time** by a Vite plugin and served as `virtual:letters` |
 | Parsing | `yaml` (frontmatter), `marked` (Markdown → HTML). Both are **devDependencies that run only at build time**. They must never be imported by browser code. |
 | Backend | None. Output is fully static (`dist/`). |
-| Hosting | Cloudflare Pages or Netlify: build `npm run build`, output `dist`, Node ≥ 20.19 |
+| Hosting | **GitHub Pages** at https://lightshift07.github.io/for-zahra/ — `.github/workflows/deploy.yml` builds and publishes on every push to `main`. A broken letter fails the workflow and the live site keeps the previous version. (Netlify/Cloudflare would also work: build `npm run build`, output `dist`.) |
 
 ### ⚠️ Dependencies
 
@@ -71,8 +71,9 @@ src/
     tokens.css               ALL design tokens. The single source of colour/type/radius/shadow/spacing.
     global.css               reset + base element styles
 vite/validate-content.ts     Vite plugin: reads + validates + renders all letters → `virtual:letters`
-vite.config.ts               base: './', registers the plugin
-netlify.toml                 Netlify build settings (Cloudflare Pages: set the same in its dashboard)
+vite.config.ts               base: './', registers the plugin (relative base is what makes the /for-zahra/ subpath work)
+.github/workflows/deploy.yml GitHub Pages deploy on every push to main
+netlify.toml                 Netlify build settings, kept in case hosting ever moves
 .env.unlocked                env for `npm run dev:unlocked`
 ```
 
@@ -253,6 +254,7 @@ Prefer the semantic tokens (`--bg-card`, `--text-body`, `--text-link`, …) over
 - TypeScript: no `any`. Letter types come from `src/content/schema.ts`.
 - Components: function components, named by file (`LetterCard.tsx` + `LetterCard.css`). Use BEM-ish class names (`.card`, `.card__teaser`, `.card--locked`).
 - `renderBody()` returns build-time-rendered HTML that is injected with `dangerouslySetInnerHTML`. That's acceptable **only** because we write the letters ourselves. Never render untrusted or user-submitted text this way.
-- Keep the site private: `noindex` meta, `robots.txt` and `X-Robots-Tag` (in `public/_headers`) stay in place.
+- Keep the site out of search engines: `noindex` meta and `robots.txt` stay in place. (`public/_headers` is ignored by GitHub Pages; it only applies on Netlify/Cloudflare.)
+- The GitHub repo is public (required for free GitHub Pages), so letters can be read on GitHub before their dates. The owner accepted this.
 - Don't commit real secrets. There are none, and there's no backend.
 - Sample letters are marked "*(Sample letter — replace this with your own words.)*". Replace or delete them before giving her the link.
