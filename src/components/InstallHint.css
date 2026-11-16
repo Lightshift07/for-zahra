@@ -1,0 +1,46 @@
+.install-hint {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding: var(--space-5);
+  border: 1px dashed var(--border-soft);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+
+.install-hint__icon {
+  display: grid;
+  place-items: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border-radius: var(--radius-pill);
+  background: var(--bg-card);
+  color: var(--accent);
+}
+
+.install-hint__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: var(--text-lg);
+  line-height: 1.2;
+}
+
+.install-hint__text {
+  margin: var(--space-1) 0 var(--space-3);
+  color: var(--text-muted);
+}
+
+/* plum on blush 8.17 */
+.install-hint__dismiss {
+  min-height: var(--tap-min);
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--bg-card);
+  color: var(--text-body);
+  font-weight: 700;
+  cursor: pointer;
+}

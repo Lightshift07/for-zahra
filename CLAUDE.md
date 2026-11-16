@@ -60,12 +60,13 @@ src/
     virtual-letters.d.ts     types for the generated `virtual:letters` module
   layouts/AppShell.tsx       wraps every route: tab bar, scroll restoration, focus-to-<h1> on navigation
   pages/                     route components (+ co-located .css): Home, OpenWhen, OpenOn, LetterPage, NotFound, ContentProblems
-  components/                shared components (+ co-located .css): LetterCard, TabBar, PageHeader, Icons
+  components/                shared components (+ co-located .css): LetterCard, Envelope, TabBar, PageHeader, InstallHint, Icons
   lib/
     useNow.ts                current time, re-read every minute + when the app returns to foreground
     opened.ts                which letters were opened on this device (localStorage) → "New" badges
     format.ts                date + countdown wording ("25 December 2026", "39 days to go")
     usePageTitle.ts          sets document.title per route
+    motion.ts                envelopeDurationMs(): reads --envelope-duration so CSS and JS stay in sync
   styles/
     tokens.css               ALL design tokens. The single source of colour/type/radius/shadow/spacing.
     global.css               reset + base element styles
@@ -86,10 +87,10 @@ Routes (data router via `createHashRouter`, so `<ScrollRestoration />` works):
 
 | Route | Page |
 |---|---|
-| `/` | Home: greeting, "something just unlocked" / "next to open" banner, tiles for both sections |
+| `/` | Home: greeting, "something just unlocked" / "next to open" banner, tiles for both sections, one-time "add to home screen" tip (hidden when installed or dismissed) |
 | `/open-when` | all Open When cards |
 | `/open-on` | all Open On cards, locked ones show date + countdown |
-| `/letter/:id` | one letter (or its locked screen). Letter ids are unique across both sections. |
+| `/letter/:id` | one letter: sealed envelope → opening animation → letter (or a locked envelope). Letter ids are unique across both sections. |
 | `*` | NotFound |
 
 The bottom tab bar (Home / Open When / Open On) is on every page except a letter, which has its own Back button. Every screen must stay reachable without a browser back button, because the home-screen app has none.
@@ -224,7 +225,14 @@ Prefer the semantic tokens (`--bg-card`, `--text-body`, `--text-link`, …) over
 - Respect safe-area insets (already on `body`) because the app runs standalone from the home screen.
 - Use `100dvh`, not `100vh`.
 
-**Motion:** gentle and slow (`--ease-soft`, `--duration-*`). Durations go to 0 under `prefers-reduced-motion`, so always use the tokens. No autoplaying audio, no parallax, no confetti that can't be skipped.
+**Motion:** gentle and slow (`--ease-soft`, `--duration-*`). Durations go to 0 under `prefers-reduced-motion`, so always use the tokens. No autoplaying audio, no parallax, no confetti that can't be skipped. Infinite/idle animations go inside `@media (prefers-reduced-motion: no-preference)`.
+
+**Letter-opening animation** (`components/Envelope.tsx/.css` + `pages/LetterPage.tsx`):
+- Stages: `sealed` (envelope + "Tap to open" button, the first time a letter is opened) → `opening` → `open` (the full letter). On re-reads the animation plays automatically, with no tap.
+- The sequence is: wax seal pops, flap swings open, letter slides up, hearts float, envelope fades, then the letter rises in. Every step is a fraction of the single token `--envelope-duration` (1900ms). The swap to the full letter happens at `LETTER_SWAP` (0.92) of it. Change the speed only via that token. The step timings are documented at the top of `Envelope.css`.
+- Under reduced motion the token is 0ms, so tapping opens the letter instantly.
+- Locked Open On letters show the same envelope with a lock seal, not interactive.
+- The envelope is `aria-hidden`. The button text, the "Opening your letter…" status and the focus move to the letter's `<h1>` carry the meaning.
 
 ## 8. Accessibility rules
 

@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { CalendarIcon, EnvelopeIcon, HeartIcon } from '../components/Icons'
+import InstallHint from '../components/InstallHint'
 import PageHeader from '../components/PageHeader'
 import { daysUntil, isUnlocked, onLetters, whenLetters } from '../content'
 import { countdownLabel } from '../lib/format'
@@ -76,6 +77,8 @@ export default function Home() {
           </Link>
         </li>
       </ul>
+
+      <InstallHint />
     </main>
   )
 }

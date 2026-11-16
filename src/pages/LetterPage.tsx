@@ -1,32 +1,66 @@
-import { useEffect, type MouseEvent } from 'react'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
-import { ArrowLeftIcon, HeartIcon, LockIcon } from '../components/Icons'
-import { daysUntil, getLetter, isUnlocked, mediaUrl, renderBody } from '../content'
+import Envelope from '../components/Envelope'
+import { ArrowLeftIcon, HeartIcon } from '../components/Icons'
+import { daysUntil, getLetter, isUnlocked, mediaUrl, renderBody, type Letter } from '../content'
 import { countdownLabel, formatDate } from '../lib/format'
-import { markOpened } from '../lib/opened'
+import { envelopeDurationMs } from '../lib/motion'
+import { markOpened, useOpened } from '../lib/opened'
 import { useNow } from '../lib/useNow'
 import { usePageTitle } from '../lib/usePageTitle'
 import NotFound from './NotFound'
 import './LetterPage.css'
 
+/*
+ * Letter route. An unlocked letter goes through three stages:
+ *   sealed  → envelope + "Tap to open" (first time she opens this letter)
+ *   opening → the envelope animation plays (also auto-plays on re-reads)
+ *   open    → the full letter; focus moves to its heading
+ * Locked "Open On" letters show a closed envelope with a lock seal instead.
+ */
+type Stage = 'sealed' | 'opening' | 'open'
+
+/** Fraction of --envelope-duration at which the full letter replaces the envelope (matches Envelope.css). */
+const LETTER_SWAP = 0.92
+
 export default function LetterPage() {
   const { id = '' } = useParams()
   const letter = getLetter(id)
+  // key={id} → the stage resets when moving between letters
+  return letter ? <LetterView key={id} letter={letter} /> : <NotFound />
+}
+
+function LetterView({ letter }: { letter: Letter }) {
   const now = useNow()
   const navigate = useNavigate()
   const location = useLocation()
-  const unlocked = letter ? letter.section === 'when' || isUnlocked(letter, now) : false
+  const opened = useOpened()
+  const unlocked = letter.section === 'when' || isUnlocked(letter, now)
+  const [stage, setStage] = useState<Stage>(() => (opened.has(letter.id) ? 'opening' : 'sealed'))
+  const headingRef = useRef<HTMLHeadingElement>(null)
 
-  usePageTitle(letter?.title)
+  usePageTitle(letter.title)
+
   useEffect(() => {
-    if (letter && unlocked) markOpened(letter.id)
-  }, [letter, unlocked])
+    if (!unlocked || stage !== 'opening') return
+    const t = window.setTimeout(() => setStage('open'), envelopeDurationMs() * LETTER_SWAP)
+    return () => window.clearTimeout(t)
+  }, [stage, unlocked])
 
-  if (!letter) return <NotFound />
+  useEffect(() => {
+    if (stage !== 'open') return
+    markOpened(letter.id)
+    const h = headingRef.current
+    if (h) {
+      h.setAttribute('tabindex', '-1')
+      h.focus({ preventScroll: true })
+    }
+  }, [stage, letter.id])
 
   const sectionPath = letter.section === 'when' ? '/open-when' : '/open-on'
   const sectionName = letter.section === 'when' ? 'Open When' : 'Open On'
   const date = letter.section === 'on' && letter.unlockDate ? formatDate(letter.unlockDate) : null
+  const kicker = date ?? sectionName
 
   // Real "back" when we navigated here inside the app (keeps scroll position);
   // otherwise (opened from a link/bookmark) fall back to the section list.
@@ -48,13 +82,36 @@ export default function LetterPage() {
       <main className="letter">
         {back}
         <div className="letter__locked">
-          <span className="letter__locked-icon">
-            <LockIcon size={32} />
-          </span>
+          <Envelope state="locked" label="Soon…" />
           <h1 className="letter__title">{letter.title}</h1>
           <p>{date ? `This letter opens on ${date}.` : "This letter's date is still a secret."}</p>
           {date && <p className="letter__countdown">{countdownLabel(daysUntil(letter, now))}</p>}
           <p className="letter__note">Not yet, my love. It'll be worth the wait.</p>
+        </div>
+      </main>
+    )
+  }
+
+  if (stage !== 'open') {
+    return (
+      <main className="letter">
+        {back}
+        <div className={`letter__stage letter__stage--${stage}`}>
+          <div className="letter__stage-head">
+            <p className="letter__kicker">{kicker}</p>
+            <h1 className="letter__title">{letter.title}</h1>
+          </div>
+          {stage === 'sealed' ? (
+            <button type="button" className="letter__envelope-btn" onClick={() => setStage('opening')}>
+              <Envelope state="sealed" />
+              <span className="letter__hint">Tap to open</span>
+            </button>
+          ) : (
+            <div className="letter__envelope-btn" role="status">
+              <Envelope state="opening" />
+              <span className="visually-hidden">Opening your letter…</span>
+            </div>
+          )}
         </div>
       </main>
     )
@@ -67,8 +124,8 @@ export default function LetterPage() {
         <span className="letter__seal">
           <HeartIcon size={22} />
         </span>
-        <p className="letter__kicker">{date ?? sectionName}</p>
-        <h1 id="letter-title" className="letter__title">
+        <p className="letter__kicker">{kicker}</p>
+        <h1 id="letter-title" ref={headingRef} className="letter__title">
           {letter.title}
         </h1>
 
