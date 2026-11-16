@@ -255,6 +255,19 @@ export function checkCollection(letters: Letter[]): string[] {
   return problems
 }
 
+/**
+ * Display order.
+ *   - Open When: by `order`, then title.
+ *   - Open On: by unlockDate, earliest first; "date TBD" (null) letters last.
+ *     `order` only breaks ties (same date, or several TBD letters), then title.
+ */
 export function sortLetters<T extends Letter>(letters: T[]): T[] {
-  return [...letters].sort((a, b) => a.order - b.order || a.title.localeCompare(b.title))
+  return [...letters].sort((a, b) => {
+    if (a.section === 'on' && b.section === 'on' && a.unlockDate !== b.unlockDate) {
+      if (a.unlockDate === null) return 1
+      if (b.unlockDate === null) return -1
+      return a.unlockDate < b.unlockDate ? -1 : 1
+    }
+    return a.order - b.order || a.title.localeCompare(b.title)
+  })
 }

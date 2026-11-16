@@ -120,7 +120,7 @@ The file starts with a `---` line, then YAML fields, then another `---` line, th
 id: christmas-2026                 # required · lowercase-kebab-case · must equal the filename · unique across BOTH folders
 title: Open on Christmas           # required · shown on the card and as the letter heading
 teaser: Our first Christmas letter # required · short line on the card · max 90 characters
-order: 1                           # required · number · cards sort by order, then title
+order: 1                           # required · number · Open When: sets card order · Open On: only breaks ties (cards sort by date)
 unlockDate: 2026-12-25             # Open On ONLY · required · YYYY-MM-DD, or null for "date TBD"
 photos:                            # optional · list
   - christmas-2026/tree.jpg        #   plain filename, or…
@@ -146,7 +146,7 @@ Media guidance: resize photos to about 1600px on the long edge and keep them und
 
 All parsing happens at **build time** in `vite/validate-content.ts`:
 1. It reads every `content/{when,on}/*.md` and runs it through `parseLetter()` in `schema.ts`.
-2. It checks ids are unique, sorts by `order` then title, and renders each body to HTML with `marked`.
+2. It checks ids are unique, sorts the letters, and renders each body to HTML with `marked`. Open When letters sort by `order`, then title. **Open On letters sort by `unlockDate`, earliest first, with "date TBD" last.** `order` only breaks ties. So setting or changing a date moves the card to the right place automatically (`sortLetters()` in `schema.ts`).
 3. It emits the virtual module `virtual:letters`: the letters as JSON (with `bodyHtml`), plus hashed URLs for **only the media files letters reference**. Unreferenced files in `content/media/` are not shipped.
 
 Because of this, the YAML and Markdown parsers never reach her phone. App code reads content only through `src/content/index.ts`, and **must use `import type` (never a value import) from `schema.ts`**, or the YAML parser gets bundled.
