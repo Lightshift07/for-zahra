@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { Outlet, ScrollRestoration, useLocation, useMatch } from 'react-router'
 import TabBar from '../components/TabBar'
+import { UNLOCK_ALL } from '../content'
+import './AppShell.css'
 
 /**
  * Wraps every route: restores scroll position on back/forward, moves focus to
@@ -26,6 +28,7 @@ export default function AppShell() {
 
   return (
     <>
+      {UNLOCK_ALL && <p className="preview-flag">Preview mode · all letters unlocked</p>}
       <Outlet />
       {!inLetter && <TabBar />}
       <ScrollRestoration />

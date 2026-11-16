@@ -29,6 +29,10 @@ jobs:
       - run: npm ci
       # Also validates every letter — a broken letter stops the deploy and the live site stays as it was.
       - run: npm run build
+        env:
+          # PREVIEW MODE: unlocks every dated letter on the live site for testing.
+          # Delete these two lines before Zahra gets the link.
+          VITE_UNLOCK_ALL: 'true'
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

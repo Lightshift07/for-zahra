@@ -199,7 +199,7 @@ Yearly occasions get a new file per year (e.g. `birthday-2028.md`) instead of re
 - A locked card shows its title, teaser and the date or countdown, but **never** any body text, photos or voice note.
 - Once unlocked, a letter stays open forever.
 - Countdown: `daysUntil()` gives whole calendar days. 0 means today.
-- `npm run dev:unlocked` (`VITE_UNLOCK_ALL=true`) unlocks everything, **in dev only**. Production builds ignore it.
+- **Preview mode** (`VITE_UNLOCK_ALL=true`) unlocks every Open On letter and shows a "Preview mode · all letters unlocked" label at the top of every page. Locally: `npm run dev:unlocked`. On the live site: the `VITE_UNLOCK_ALL: 'true'` env on the build step in `.github/workflows/deploy.yml`. **Status: ON on the live site (for testing). It must be removed before Zahra has the link.**
 - **Honest limitation:** locking is a UI promise, not security. Letter text ships in the JS bundle, so a determined person could read it early. Never put anything truly secret here. If real locking is ever wanted, it needs a backend, so ask first.
 - Components get the time from `useNow()` (`src/lib/useNow.ts`) and pass it to `isUnlocked(letter, now)` / `daysUntil(letter, now)`. Don't call `new Date()` in components. Counters are live: `useNow` fires exactly at the next 12:00am Eastern, also re-checks every minute as a safety net, and refreshes when the app returns to the foreground. A letter opens and its countdown ends at midnight Eastern even if the app was left open.
 - Calendar dates are displayed with `formatDate()` (`src/lib/format.ts`), which never shifts a date across time zones: `2026-12-25` always shows as 25 December 2026.

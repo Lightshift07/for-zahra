@@ -51,8 +51,13 @@ export function easternDaysSince(isoDate: string, now: Date = new Date()): numbe
   return dayNumber(easternToday(now)) - dayNumber(isoDate)
 }
 
-/** Dev-only escape hatch: VITE_UNLOCK_ALL=true npm run dev. Ignored in production builds. */
-export const UNLOCK_ALL = import.meta.env.DEV && import.meta.env.VITE_UNLOCK_ALL === 'true'
+/**
+ * Preview mode: every Open On letter unlocked.
+ *   - locally: `npm run dev:unlocked`
+ *   - live site: `VITE_UNLOCK_ALL: 'true'` on the build step in .github/workflows/deploy.yml
+ * The app shows a "Preview mode" label whenever this is on. Must be OFF before Zahra has the link.
+ */
+export const UNLOCK_ALL = import.meta.env.VITE_UNLOCK_ALL === 'true'
 
 export function isUnlocked(letter: Pick<OnLetter, 'unlockDate'>, now: Date = new Date()): boolean {
   if (UNLOCK_ALL) return true
