@@ -70,10 +70,13 @@ src/
     motion.ts                envelopeDurationMs(): reads --envelope-duration so CSS and JS stay in sync
     useReducedMotion.ts      live prefers-reduced-motion flag
     together.ts              TOGETHER_SINCE (2026-06-30) + days/months together, in Eastern calendar days
+    autoUpdate.ts            registers sw.js; useAutoUpdate() reloads into a newer deploy (never mid-letter)
+  globals.d.ts               declares __APP_VERSION__
   styles/
     tokens.css               ALL design tokens. The single source of colour/type/radius/shadow/spacing.
     global.css               reset + base element styles
 vite/validate-content.ts     Vite plugin: reads + validates + renders all letters → `virtual:letters`
+vite/offline.ts              Vite plugin: version id (__APP_VERSION__), dist/version.json, dist/sw.js (offline service worker)
 vite.config.ts               base: './', registers the plugin (relative base is what makes the /for-zahra/ subpath work)
 .github/workflows/deploy.yml GitHub Pages deploy on every push to main
 netlify.toml                 Netlify build settings, kept in case hosting ever moves
@@ -205,6 +208,16 @@ Yearly occasions get a new file per year (e.g. `birthday-2028.md`) instead of re
 - Components get the time from `useNow()` (`src/lib/useNow.ts`) and pass it to `isUnlocked(letter, now)` / `daysUntil(letter, now)`. Don't call `new Date()` in components. Counters are live: `useNow` fires exactly at the next 12:00am Eastern, also re-checks every minute as a safety net, and refreshes when the app returns to the foreground. A letter opens and its countdown ends at midnight Eastern even if the app was left open.
 - Calendar dates are displayed with `formatDate()` (`src/lib/format.ts`), which never shifts a date across time zones: `2026-12-25` always shows as 25 December 2026.
 - A letter opened on this device is remembered in localStorage (`src/lib/opened.ts`). Unlocked-but-unread Open On letters get a "New" badge and the home-screen banner. If storage is unavailable, everything still works without the badges.
+
+## 6b. Offline + automatic updates
+
+No dependencies; build side in `vite/offline.ts`, app side in `src/lib/autoUpdate.ts`. Production builds only (`npm run dev` is unaffected).
+
+- **Offline:** `dist/sw.js` is a generated service worker. On the first visit it saves every built file (page, code, styles, icons, **every letter photo and voice note**) plus Google Fonts as they load. After that the whole site, including the envelope animation and themed effects, works with no signal.
+- **Fresh page when online:** page loads go network-first (bypassing GitHub Pages' 10-minute HTTP cache). If the network doesn't answer within 4 seconds (weak signal), the saved copy is shown instead.
+- **Automatic updates:** each build gets a version id (the git commit on GitHub Actions). The app checks `version.json` when it opens, when it comes back to the foreground, when signal returns, and every 15 minutes. If a newer version is live, it reloads itself, **but never while a letter is open**. It waits until she leaves the letter or the app goes to the background.
+- Because every media file is saved for offline use, **keep photos and voice notes small** (see media guidance in §5). Large files slow down her first visit.
+- Don't add other caching layers or a second service worker. If offline behaviour needs to change, change `serviceWorker()` in `vite/offline.ts`.
 
 ## 7. Design rules
 

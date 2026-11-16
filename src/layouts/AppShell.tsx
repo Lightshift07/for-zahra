@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Outlet, ScrollRestoration, useLocation, useMatch } from 'react-router'
 import TabBar from '../components/TabBar'
 import { UNLOCK_ALL } from '../content'
+import { useAutoUpdate } from '../lib/autoUpdate'
 import './AppShell.css'
 
 /**
@@ -13,6 +14,7 @@ export default function AppShell() {
   const { pathname } = useLocation()
   const inLetter = useMatch('/letter/:id') !== null
   const firstRender = useRef(true)
+  useAutoUpdate(inLetter)
 
   useEffect(() => {
     if (firstRender.current) {
