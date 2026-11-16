@@ -7,7 +7,7 @@
  *   2. writes `version.json` → { "version": "<id>" }, which the app polls to
  *      notice a newer deploy (see src/lib/autoUpdate.ts);
  *   3. writes `sw.js`, a service worker that precaches every built file
- *      (pages, code, styles, icons, letter photos + voice notes) so the site
+ *      (pages, code, styles, fonts, icons, letter photos + voice notes) so the site
  *      opens with no signal, and always fetches a fresh page when online.
  */
 import { readdirSync, statSync } from 'node:fs'
@@ -103,19 +103,6 @@ self.addEventListener('fetch', (event) => {
 
   // Version checks always go to the network.
   if (url.pathname.endsWith('/version.json') || url.pathname.endsWith('/sw.js')) return;
-
-  // Google Fonts: serve the saved copy, refresh it in the background.
-  if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
-    event.respondWith(
-      caches.open(RUNTIME).then((cache) =>
-        cache.match(req).then((hit) => {
-          const fresh = fetch(req).then((res) => { if (res.ok || res.type === 'opaque') cache.put(req, res.clone()); return res; });
-          return hit || fresh;
-        }),
-      ),
-    );
-    return;
-  }
 
   // Our own files (hashed, never change): saved copy first, network otherwise.
   if (url.origin === self.location.origin) {

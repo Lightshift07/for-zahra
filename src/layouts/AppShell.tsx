@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
-import { Outlet, ScrollRestoration, useLocation, useMatch } from 'react-router'
+import { Outlet, useLocation, useMatch } from 'react-router'
 import TabBar from '../components/TabBar'
 import { UNLOCK_ALL } from '../content'
 import { useAutoUpdate } from '../lib/autoUpdate'
+import { useScrollRestoration } from '../lib/useScrollRestoration'
 import './AppShell.css'
 
 /**
@@ -15,6 +16,7 @@ export default function AppShell() {
   const inLetter = useMatch('/letter/:id') !== null
   const firstRender = useRef(true)
   useAutoUpdate(inLetter)
+  useScrollRestoration()
 
   useEffect(() => {
     if (firstRender.current) {
@@ -33,7 +35,6 @@ export default function AppShell() {
       {UNLOCK_ALL && <p className="preview-flag">Preview mode · all letters unlocked</p>}
       <Outlet />
       {!inLetter && <TabBar />}
-      <ScrollRestoration />
     </>
   )
 }

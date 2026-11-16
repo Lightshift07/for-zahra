@@ -18,7 +18,7 @@ Tone: warm, soft, personal, calm. It's a love letter, not a product. No analytic
 | Concern | Choice |
 |---|---|
 | Build | Vite 8 + React 19 + TypeScript (strict-ish, see tsconfig) |
-| Routing | `react-router` v8, **HashRouter** (reason in §4) |
+| Routing | `react-router` v8, plain **`<HashRouter>`** (reason in §4) |
 | Styling | Plain CSS + CSS custom properties. **No Tailwind, CSS-in-JS or UI kits.** One `.css` file sits next to each component. |
 | Content | Markdown + YAML frontmatter, parsed **at build time** by a Vite plugin and served as `virtual:letters` |
 | Parsing | `yaml` (frontmatter), `marked` (Markdown → HTML). Both are **devDependencies that run only at build time**. They must never be imported by browser code. |
@@ -49,7 +49,8 @@ content/                     ← THE ONLY PLACE YOU EDIT TO ADD LETTERS
   when/*.md                  Open When letters (one file per letter)
   on/*.md                    Open On letters (one file per letter)
   media/                     photos + voice notes, referenced by path relative to this folder
-public/                      copied as-is: manifest, home-screen icons, _headers, robots.txt
+public/                      copied as-is: manifest, home-screen icons, fonts/ (self-hosted woff2), _headers, robots.txt
+licenses/fonts/              SIL OFL licences for the three self-hosted fonts
 src/
   main.tsx                   entry: imports tokens.css + global.css
   App.tsx                    router + content-error screen
@@ -58,7 +59,7 @@ src/
     index.ts                 the app's content API: whenLetters, onLetters, getLetter(), mediaUrl(), renderBody()
     unlock.ts                date-unlock rules, all in US Eastern time (isUnlocked, daysUntil, msUntilEasternMidnight)
     virtual-letters.d.ts     types for the generated `virtual:letters` module
-  layouts/AppShell.tsx       wraps every route: tab bar, scroll restoration, focus-to-<h1> on navigation
+  layouts/AppShell.tsx       wraps every route: tab bar, preview label, auto-update, scroll restoration, focus-to-<h1> on navigation
   pages/                     route components (+ co-located .css): Home, OpenWhen, OpenOn, LetterPage, NotFound, ContentProblems
   components/                shared components (+ co-located .css): LetterCard, Envelope, TabBar, PageHeader, TogetherCounter, InstallHint, Icons
     PickForMe.tsx            "Pick one for me" shuffle on the Open When page
@@ -72,6 +73,7 @@ src/
     useReducedMotion.ts      live prefers-reduced-motion flag
     together.ts              TOGETHER_SINCE (2026-06-30) + days/months together (Eastern calendar days) + yearsTogetherOn() for the candle
     autoUpdate.ts            registers sw.js; useAutoUpdate() reloads into a newer deploy (never mid-letter)
+    useScrollRestoration.ts  new page → top; back → previous position (per history entry, survives reloads)
   globals.d.ts               declares __APP_VERSION__
   styles/
     tokens.css               ALL design tokens. The single source of colour/type/radius/shadow/spacing.
@@ -91,7 +93,7 @@ netlify.toml                 Netlify build settings, kept in case hosting ever m
 - iOS home-screen web apps reopen at their saved URL. Hash routes always resolve.
 - SEO and pretty URLs don't matter here, because the site is private and `noindex`.
 
-Routes (data router via `createHashRouter`, so `<ScrollRestoration />` works):
+Routes (plain `<HashRouter>` + `<Routes>` in `App.tsx`; **don't switch to the data router** (`createHashRouter`), which costs ~18 KB gz more. Scroll restoration is our own `useScrollRestoration()`: new page → top, Back/swipe-back → the exact spot she left):
 
 | Route | Page |
 |---|---|
@@ -207,7 +209,7 @@ Yearly occasions get a new file per year (e.g. `birthday-2028.md`) instead of re
 - A locked card shows its title, teaser and the date or countdown, but **never** any body text, photos or voice note.
 - Once unlocked, a letter stays open forever.
 - Countdown: `daysUntil()` gives whole calendar days. 0 means today.
-- **Preview mode** (`VITE_UNLOCK_ALL=true`) unlocks every Open On letter and shows a "Preview mode · all letters unlocked" label at the top of every page. Locally: `npm run dev:unlocked`. On the live site: the `VITE_UNLOCK_ALL: 'true'` env on the build step in `.github/workflows/deploy.yml`. **Status: ON on the live site (for testing). It must be removed before Zahra has the link.**
+- **Preview mode** (`VITE_UNLOCK_ALL=true`) unlocks every Open On letter and shows a "Preview mode · all letters unlocked" label at the top of every page. Locally: `npm run dev:unlocked`. On the live site: the `VITE_UNLOCK_ALL: 'true'` env on the build step in `.github/workflows/deploy.yml`. **Status: OFF on the live site.** Only turn it on briefly for testing, and never once Zahra has the link.
 - **Honest limitation:** locking is a UI promise, not security. Letter text ships in the JS bundle, so a determined person could read it early. Never put anything truly secret here. If real locking is ever wanted, it needs a backend, so ask first.
 - Components get the time from `useNow()` (`src/lib/useNow.ts`) and pass it to `isUnlocked(letter, now)` / `daysUntil(letter, now)`. Don't call `new Date()` in components. Counters are live: `useNow` fires exactly at the next 12:00am Eastern, also re-checks every minute as a safety net, and refreshes when the app returns to the foreground. A letter opens and its countdown ends at midnight Eastern even if the app was left open.
 - Calendar dates are displayed with `formatDate()` (`src/lib/format.ts`), which never shifts a date across time zones: `2026-12-25` always shows as 25 December 2026.
@@ -217,11 +219,24 @@ Yearly occasions get a new file per year (e.g. `birthday-2028.md`) instead of re
 
 No dependencies; build side in `vite/offline.ts`, app side in `src/lib/autoUpdate.ts`. Production builds only (`npm run dev` is unaffected).
 
-- **Offline:** `dist/sw.js` is a generated service worker. On the first visit it saves every built file (page, code, styles, icons, **every letter photo and voice note**) plus Google Fonts as they load. After that the whole site, including the envelope animation and themed effects, works with no signal.
+- **Offline:** `dist/sw.js` is a generated service worker. On the first visit it saves every built file (page, code, styles, fonts, icons, **every letter photo and voice note**). After that the whole site, including the envelope animation and themed effects, works with no signal.
 - **Fresh page when online:** page loads go network-first (bypassing GitHub Pages' 10-minute HTTP cache). If the network doesn't answer within 4 seconds (weak signal), the saved copy is shown instead.
 - **Automatic updates:** each build gets a version id (the git commit on GitHub Actions). The app checks `version.json` when it opens, when it comes back to the foreground, when signal returns, and every 15 minutes. If a newer version is live, it reloads itself, **but never while a letter is open**. It waits until she leaves the letter or the app goes to the background.
 - Because every media file is saved for offline use, **keep photos and voice notes small** (see media guidance in §5). Large files slow down her first visit.
 - Don't add other caching layers or a second service worker. If offline behaviour needs to change, change `serviceWorker()` in `vite/offline.ts`.
+
+## 6c. Performance budget
+
+Measured on a throttled mid-range phone (4× CPU slowdown, ~1.6 Mbps, 150 ms latency), first visit, no cache:
+
+| | Before (Nov 2026) | After optimisation |
+|---|---|---|
+| First paint | 1.30 s | **1.13 s** |
+| JavaScript (gz) | 108 KB | **91 KB** |
+| Total download | 270 KB | **249 KB** |
+| Outside servers contacted | 2 (Google Fonts) | **0** |
+
+Repeat visits come from the offline copy and are near-instant. Keep it this way: no new runtime dependencies without asking (§2), no third-party requests, photos ≤ ~400 KB, and re-measure after anything that adds JS.
 
 ## 7. Design rules
 
@@ -252,7 +267,8 @@ Prefer the semantic tokens (`--bg-card`, `--text-body`, `--text-link`, …) over
 - Display/headings: `--font-display` (Cormorant Garamond), **italic**, weight 400–600.
 - Letter body: `--font-letter` (Caveat) at `--text-letter` (24px). **Never below 20px.** Use it only for the letter body and short handwritten flourishes, never for UI controls, dates or long instructions.
 - UI (buttons, labels, dates, captions): `--font-ui` (Nunito), at least 16px for readable text and 14px for captions.
-- Fonts load from Google Fonts in `index.html` with `display=swap`. Don't add font weights you don't use.
+- Fonts are **self-hosted** in `public/fonts/` (Latin subsets from Google Fonts, SIL OFL, licences in `licenses/fonts/`) and declared with `@font-face` (`font-display: swap`) inline in `index.html`. Only what's used ships: Cormorant Garamond **italic** 500–600, Caveat 400–700, Nunito 400–700. To add a weight or style, download its Latin woff2 and add an `@font-face`. Never link Google Fonts again: the site makes **no requests to outside servers**.
+- Don't `<link rel="preload">` fonts: measured on a slow phone, it competes with the JS needed to render and made first paint slower (1.50s vs 1.13s).
 
 **Shape and depth:**
 - Radius 20–28px (`--radius-md`, `--radius-lg`, `--radius-xl`) for cards, sheets, images and buttons. Pills use `--radius-pill`.
