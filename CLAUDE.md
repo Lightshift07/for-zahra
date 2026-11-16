@@ -58,8 +58,14 @@ src/
     index.ts                 the app's content API: whenLetters, onLetters, getLetter(), mediaUrl(), renderBody()
     unlock.ts                date-unlock rules (isUnlocked, daysUntil)
     virtual-letters.d.ts     types for the generated `virtual:letters` module
-  pages/                     route components (+ co-located .css)
-  components/                shared components (+ co-located .css), created when needed
+  layouts/AppShell.tsx       wraps every route: tab bar, scroll restoration, focus-to-<h1> on navigation
+  pages/                     route components (+ co-located .css): Home, OpenWhen, OpenOn, LetterPage, NotFound, ContentProblems
+  components/                shared components (+ co-located .css): LetterCard, TabBar, PageHeader, Icons
+  lib/
+    useNow.ts                current time, re-read every minute + when the app returns to foreground
+    opened.ts                which letters were opened on this device (localStorage) → "New" badges
+    format.ts                date + countdown wording ("25 December 2026", "39 days to go")
+    usePageTitle.ts          sets document.title per route
   styles/
     tokens.css               ALL design tokens. The single source of colour/type/radius/shadow/spacing.
     global.css               reset + base element styles
@@ -76,7 +82,17 @@ netlify.toml                 Netlify build settings (Cloudflare Pages: set the s
 - iOS home-screen web apps reopen at their saved URL. Hash routes always resolve.
 - SEO and pretty URLs don't matter here, because the site is private and `noindex`.
 
-Planned routes: `/` (home), `/open-when`, `/open-on`, `/letter/:id`. Letter ids are unique across both sections, so `/letter/:id` is enough.
+Routes (data router via `createHashRouter`, so `<ScrollRestoration />` works):
+
+| Route | Page |
+|---|---|
+| `/` | Home: greeting, "something just unlocked" / "next to open" banner, tiles for both sections |
+| `/open-when` | all Open When cards |
+| `/open-on` | all Open On cards, locked ones show date + countdown |
+| `/letter/:id` | one letter (or its locked screen). Letter ids are unique across both sections. |
+| `*` | NotFound |
+
+The bottom tab bar (Home / Open When / Open On) is on every page except a letter, which has its own Back button. Every screen must stay reachable without a browser back button, because the home-screen app has none.
 
 `vite.config.ts` uses `base: './'` so the build works from any path. Reference assets through imports or `mediaUrl()`, never through hard-coded absolute `/…` paths.
 
@@ -164,7 +180,8 @@ Yearly occasions get a new file per year (e.g. `birthday-2028.md`) instead of re
 - Countdown: `daysUntil()` gives whole calendar days. 0 means today.
 - `npm run dev:unlocked` (`VITE_UNLOCK_ALL=true`) unlocks everything, **in dev only**. Production builds ignore it.
 - **Honest limitation:** locking is a UI promise, not security. Letter text ships in the JS bundle, so a determined person could read it early. Never put anything truly secret here. If real locking is ever wanted, it needs a backend, so ask first.
-- Read the current time with `new Date()` only through these helpers, so tests and previews can pass a fixed `now`.
+- Components get the time from `useNow()` (`src/lib/useNow.ts`) and pass it to `isUnlocked(letter, now)` / `daysUntil(letter, now)`. Don't call `new Date()` in components. `useNow` re-checks every minute and when the app returns to the foreground, so a letter opens at midnight even if the app was left open.
+- A letter opened on this device is remembered in localStorage (`src/lib/opened.ts`). Unlocked-but-unread Open On letters get a "New" badge and the home-screen banner. If storage is unavailable, everything still works without the badges.
 
 ## 7. Design rules
 

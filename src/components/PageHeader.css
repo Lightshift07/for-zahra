@@ -1,0 +1,21 @@
+.page-header {
+  margin-bottom: var(--space-6);
+}
+
+.page-header__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--text-display);
+  line-height: 1.05;
+}
+
+/* Short handwritten flourish — Caveat at 24px, never smaller. */
+.page-header__intro {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-letter);
+  font-size: var(--text-letter);
+  line-height: 1.25;
+  color: var(--text-muted);
+}

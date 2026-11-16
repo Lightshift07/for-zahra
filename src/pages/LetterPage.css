@@ -1,0 +1,181 @@
+.letter {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-4) var(--gutter) var(--space-7);
+}
+
+.letter__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--tap-min);
+  padding: 0 var(--space-4) 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-link);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* ---- The letter sheet ---- */
+.letter__paper {
+  position: relative;
+  margin-top: var(--space-7);
+  padding: var(--space-7) var(--space-5) var(--space-6);
+  border-radius: var(--radius-xl);
+  background: var(--bg-paper);
+  box-shadow: var(--shadow-lg);
+  animation: rise-in var(--duration-slow) var(--ease-soft) both;
+}
+
+@media (min-width: 30rem) {
+  .letter__paper {
+    padding-inline: var(--space-6);
+  }
+}
+
+.letter__seal {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--bg-paper);
+  box-shadow: var(--shadow-md);
+  transform: translate(-50%, -50%);
+}
+
+.letter__kicker {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.letter__title {
+  margin: var(--space-2) 0 var(--space-5);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: var(--text-xl);
+  line-height: 1.15;
+  text-align: center;
+}
+
+/* Handwritten body: Caveat at 24px (never below 20px). */
+.letter__body {
+  font-family: var(--font-letter);
+  font-size: var(--text-letter);
+  line-height: var(--leading-letter);
+  overflow-wrap: break-word;
+}
+
+.letter__body > :first-child {
+  margin-top: 0;
+}
+
+.letter__body p,
+.letter__body ul,
+.letter__body ol {
+  margin: 0 0 0.8em;
+}
+
+.letter__body > :last-child {
+  margin-bottom: 0;
+}
+
+/* ---- Photos: soft polaroids ---- */
+.letter__photos {
+  display: grid;
+  gap: var(--space-5);
+  margin-top: var(--space-6);
+}
+
+.letter__photo {
+  margin: 0;
+  padding: var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-md);
+  transform: rotate(-1.2deg);
+}
+
+.letter__photo:nth-child(even) {
+  transform: rotate(1deg);
+}
+
+.letter__photo img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- Voice note ---- */
+.letter__voice {
+  margin-top: var(--space-6);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card-alt);
+}
+
+.letter__voice-title {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: var(--text-lg);
+}
+
+.letter__voice audio {
+  width: 100%;
+}
+
+.letter__footer {
+  margin: var(--space-6) 0 0;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* ---- Locked ---- */
+.letter__locked {
+  margin-top: var(--space-6);
+  padding: var(--space-6) var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--bg-card-locked);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  animation: rise-in var(--duration-slow) var(--ease-soft) both;
+}
+
+.letter__locked-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--radius-pill);
+  background: var(--bg-page);
+  color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+}
+
+.letter__countdown {
+  display: inline-block;
+  padding: var(--space-1) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--bg-page);
+  font-weight: 700;
+}
+
+.letter__note {
+  margin-bottom: 0;
+  font-family: var(--font-letter);
+  font-size: var(--text-letter);
+}

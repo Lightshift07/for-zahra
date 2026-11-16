@@ -32,6 +32,11 @@
   --accent-soft: var(--color-rose);
   --focus-ring: var(--color-mauve-ink);
   --border-soft: rgb(181 119 154 / 0.25); /* mauve at 25% — never hard black borders */
+  --bg-paper: #ffffff;                       /* letter sheet · plum on white 10.6:1 */
+  --bg-nav: rgb(255 248 245 / 0.92);         /* cream, slightly translucent for the tab bar */
+  --bg-page-glow:
+    radial-gradient(40rem 22rem at 0% -5%, var(--color-blush), transparent 70%),
+    radial-gradient(36rem 22rem at 100% 0%, var(--color-lavender), transparent 65%);
 
   /* ---- Typography ---- */
   --font-display: "Cormorant Garamond", "Georgia", serif;  /* use italic */
@@ -71,6 +76,7 @@
   --gutter: var(--space-4);          /* page side padding on phones */
   --content-max: 34rem;              /* reading column max width */
   --tap-min: 44px;                   /* minimum touch target */
+  --nav-height: 4.25rem;             /* bottom tab bar, excluding safe-area inset */
 
   /* ---- Motion ---- */
   --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);

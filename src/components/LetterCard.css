@@ -1,0 +1,142 @@
+.card-list {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .card-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-4);
+  flex: 1;
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: var(--space-5);
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-md);
+  color: var(--text-body);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--duration-base) var(--ease-soft),
+    box-shadow var(--duration-base) var(--ease-soft);
+}
+
+.card--lavender {
+  background: var(--bg-card-alt);
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.card--locked {
+  background: var(--bg-card-locked);
+  box-shadow: var(--shadow-sm);
+  cursor: default;
+}
+
+.card.is-wiggling {
+  animation: card-wiggle var(--duration-slow) var(--ease-soft);
+}
+
+@keyframes card-wiggle {
+  20% { transform: translateX(-5px) rotate(-1deg); }
+  45% { transform: translateX(4px) rotate(0.8deg); }
+  70% { transform: translateX(-2px); }
+}
+
+/* Wax-seal circle: mauve heart is decorative (non-text), so 3:1 isn't required. */
+.card__seal {
+  display: grid;
+  place-items: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border-radius: var(--radius-pill);
+  background: var(--bg-page);
+  color: var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.card__seal--locked {
+  color: var(--text-muted);
+}
+
+.card__body {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.card__title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: var(--text-lg);
+  line-height: 1.15;
+}
+
+/* mauve-ink on blush 5.99 · lavender 5.49 · petal 5.29 */
+.card__teaser {
+  color: var(--text-muted);
+}
+
+.card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+}
+
+.card__pill {
+  padding: 0.15rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--bg-page);
+  font-weight: 700;
+}
+
+/* plum on rose 5.88 */
+.card__pill--new {
+  background: var(--accent-soft);
+}
+
+.card__nudge {
+  margin: 0;
+  padding: 0 var(--space-4);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.card__nudge:not(:empty) {
+  padding-top: var(--space-2);
+}
