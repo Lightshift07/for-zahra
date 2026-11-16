@@ -4,6 +4,7 @@ title: Open on New Year's Day
 teaser: A letter for the very first day of 2027.
 order: 3
 unlockDate: 2027-01-01
+theme: new-year
 ---
 Happy New Year, Zahra!
 

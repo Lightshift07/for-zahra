@@ -46,6 +46,11 @@ export function msUntilEasternMidnight(now: Date = new Date()): number {
   return Math.max(1000, DAY_MS - elapsed)
 }
 
+/** Whole Eastern calendar days from `isoDate` to today (0 on the day itself). */
+export function easternDaysSince(isoDate: string, now: Date = new Date()): number {
+  return dayNumber(easternToday(now)) - dayNumber(isoDate)
+}
+
 /** Dev-only escape hatch: VITE_UNLOCK_ALL=true npm run dev. Ignored in production builds. */
 export const UNLOCK_ALL = import.meta.env.DEV && import.meta.env.VITE_UNLOCK_ALL === 'true'
 

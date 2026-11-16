@@ -1,0 +1,63 @@
+.together {
+  position: relative;
+  margin-top: var(--space-5);
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+.together__heart {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--bg-paper);
+  box-shadow: var(--shadow-sm);
+  transform: translate(-50%, -50%);
+}
+
+/* mauve-ink on white 7.17 */
+.together__label {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.together__count {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-xl);
+  line-height: 1.1;
+}
+
+.together__number {
+  font-size: clamp(3rem, 14vw, 4rem);
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Handwritten flourish — Caveat at 24px */
+.together__breakdown {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-letter);
+  font-size: var(--text-letter);
+  line-height: 1.2;
+}
+
+.together__since {
+  margin: var(--space-2) 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}

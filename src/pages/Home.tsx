@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import { CalendarIcon, EnvelopeIcon, HeartIcon } from '../components/Icons'
 import InstallHint from '../components/InstallHint'
 import PageHeader from '../components/PageHeader'
+import TogetherCounter from '../components/TogetherCounter'
 import { daysUntil, isUnlocked, onLetters, whenLetters } from '../content'
 import { countdownLabel } from '../lib/format'
 import { useOpened } from '../lib/opened'
@@ -68,6 +69,8 @@ export default function Home() {
           </Link>
         </li>
       </ul>
+
+      <TogetherCounter now={now} />
 
       <InstallHint />
     </main>

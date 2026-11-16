@@ -60,13 +60,16 @@ src/
     virtual-letters.d.ts     types for the generated `virtual:letters` module
   layouts/AppShell.tsx       wraps every route: tab bar, scroll restoration, focus-to-<h1> on navigation
   pages/                     route components (+ co-located .css): Home, OpenWhen, OpenOn, LetterPage, NotFound, ContentProblems
-  components/                shared components (+ co-located .css): LetterCard, Envelope, TabBar, PageHeader, InstallHint, Icons
+  components/                shared components (+ co-located .css): LetterCard, Envelope, TabBar, PageHeader, TogetherCounter, InstallHint, Icons
+    effects/                 ThemeEffects (snow / floating hearts / fireworks overlay) + Snowman
   lib/
     useNow.ts                live current time: fires at 12am Eastern, every minute, and on return to foreground
     opened.ts                which letters were opened on this device (localStorage) → "New" badges
     format.ts                date + countdown wording ("25 December 2026", "39 days to go")
     usePageTitle.ts          sets document.title per route
     motion.ts                envelopeDurationMs(): reads --envelope-duration so CSS and JS stay in sync
+    useReducedMotion.ts      live prefers-reduced-motion flag
+    together.ts              TOGETHER_SINCE (2026-06-30) + days/months together, in Eastern calendar days
   styles/
     tokens.css               ALL design tokens. The single source of colour/type/radius/shadow/spacing.
     global.css               reset + base element styles
@@ -88,7 +91,7 @@ Routes (data router via `createHashRouter`, so `<ScrollRestoration />` works):
 
 | Route | Page |
 |---|---|
-| `/` | Home: "A few letters for… Zahra" title, "something just unlocked" / "next to open" banner, tiles for both sections, one-time "add to home screen" tip (hidden when installed or dismissed) |
+| `/` | Home: "A few letters for… Zahra" title, "something just unlocked" / "next to open" banner, tiles for both sections, **"Together for N days" counter** (below the tiles; live, rolls over at 12am Eastern), one-time "add to home screen" tip (hidden when installed or dismissed) |
 | `/open-when` | all Open When cards |
 | `/open-on` | all Open On cards, locked ones show date + countdown |
 | `/letter/:id` | one letter: sealed envelope → opening animation → letter (or a locked envelope). Letter ids are unique across both sections. |
@@ -127,6 +130,7 @@ photos:                            # optional · list
   - file: christmas-2026/us.jpg    #   …with alt text (preferred, see Accessibility)
     alt: Us by the tree, laughing
 voiceNote: christmas-2026/hi.m4a   # optional · one audio file
+theme: christmas                   # optional · christmas | valentines | new-year (see "Themed letters")
 ---
 Merry Christmas, my love!
 
@@ -139,6 +143,21 @@ Rules the validator enforces (see `src/content/schema.ts`):
 - `unlockDate` must be a real calendar date (`2027-02-30` is rejected).
 - Photos must be jpg/jpeg/png/webp/avif/gif/svg. Voice notes must be m4a/mp3/aac/ogg/opus/wav/webm. Every referenced file must exist in `content/media/`.
 - The body can't be empty.
+- `theme`, if present, must be one of `christmas`, `valentines`, `new-year`.
+
+### Themed letters
+
+Add `theme:` to any letter (either section) to give it a full-screen effect **once it is open**. Effects never appear on cards, the home page, the sealed envelope or during the opening animation.
+
+| `theme` | Effect | Button (top-right of the letter) |
+|---|---|---|
+| `christmas` | snow falling down the screen + a snowman perched on the letter's top-right corner | "Stop the snow" / "Let it snow" |
+| `valentines` | hearts floating up the screen | "Stop the hearts" / "Bring back the hearts" |
+| `new-year` | a ~5 second fireworks show as the letter opens | "Fireworks again" |
+
+Currently themed: `christmas-2026` (christmas), `new-years-2027` (new-year), `valentines-2027` (valentines). Future years just add the same line, e.g. `christmas-2027.md` with `theme: christmas`.
+
+Rules (`src/components/effects/`): the overlay is `aria-hidden` and `pointer-events: none`, so it never blocks taps or reading. Continuous effects must always have a stop button. Under `prefers-reduced-motion` no moving effects are rendered (the snowman still shows, still). Effect colours are decorative tokens (`--color-snow`, `--color-gold`, `--shadow-snow`). To add a new theme, add it to `THEMES` in `schema.ts`, render it in `ThemeEffects.tsx`, and add its button labels in `LetterPage.tsx`.
 
 Media guidance: resize photos to about 1600px on the long edge and keep them under about 400 KB (JPEG/WebP). For voice notes, use **AAC `.m4a` or `.mp3`**, because those play on iPhone Safari. Avoid `.ogg`/`.opus` for anything she needs to hear on iOS. Files under 4 KB get inlined into the JS by Vite, which is fine.
 

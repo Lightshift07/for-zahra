@@ -18,6 +18,9 @@
   --color-mauve-ink: #7e4566;  /* AA-safe mauve for links and small accent text */
   --color-plum: #5a3a4e;       /* body text */
   --color-lavender: #e8ddf5;
+  /* Decorative-only colours for themed effects (never used for text) */
+  --color-snow: #ffffff;
+  --color-gold: #e9b872;      /* fireworks sparks, snowman's carrot nose */
 
   /* ---- Semantic roles (use these in components) ---- */
   --bg-page: var(--color-cream);
@@ -32,7 +35,7 @@
   --accent-soft: var(--color-rose);
   --focus-ring: var(--color-mauve-ink);
   --border-soft: rgb(181 119 154 / 0.25); /* mauve at 25% — never hard black borders */
-  --bg-paper: #ffffff;                       /* letter sheet · plum on white 10.6:1 */
+  --bg-paper: #ffffff;                       /* letter sheet · plum on white 9.77:1, mauve-ink on white 7.17:1 */
   --bg-nav: rgb(255 248 245 / 0.92);         /* cream, slightly translucent for the tab bar */
   --bg-page-glow:
     radial-gradient(40rem 22rem at 0% -5%, var(--color-blush), transparent 70%),
@@ -65,6 +68,7 @@
   --shadow-md: 0 6px 20px rgb(181 119 154 / 0.18), 0 2px 6px rgb(248 183 204 / 0.25);
   --shadow-lg: 0 14px 40px rgb(181 119 154 / 0.22), 0 4px 12px rgb(248 183 204 / 0.3);
   --shadow-drop: drop-shadow(0 3px 4px rgb(181 119 154 / 0.25)); /* for `filter:` on SVG shapes */
+  --shadow-snow: drop-shadow(0 0 2px rgb(181 119 154 / 0.55));     /* keeps white snow visible on white/cream */
 
   /* ---- Spacing (4px base) ---- */
   --space-1: 0.25rem;

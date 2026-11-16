@@ -1,0 +1,40 @@
+.snowman {
+  position: absolute;
+  top: 0;
+  right: var(--space-5);
+  width: 4rem;
+  height: auto;
+  filter: var(--shadow-drop);
+  transform: translateY(-80%);
+  transform-origin: bottom center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .snowman {
+    animation: snowman-wobble 3.6s ease-in-out infinite;
+  }
+}
+
+@keyframes snowman-wobble {
+  0%, 100% { transform: translateY(-80%) rotate(-3deg); }
+  50% { transform: translateY(-80%) rotate(3deg); }
+}
+
+.snowman__snow {
+  fill: var(--color-snow);
+  stroke: var(--color-rose);
+  stroke-width: 1.5;
+}
+
+.snowman__scarf { fill: var(--color-mauve); }
+.snowman__hat { fill: var(--color-plum); }
+.snowman__band { fill: var(--color-rose); }
+.snowman__coal { fill: var(--color-plum); }
+.snowman__nose { fill: var(--color-gold); }
+
+.snowman__smile {
+  fill: none;
+  stroke: var(--color-plum);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}

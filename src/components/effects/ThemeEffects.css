@@ -1,0 +1,128 @@
+/* Overlay for themed effects. Decorative only: never blocks taps or reading. */
+.fx {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  overflow: hidden;
+  pointer-events: none;
+  animation: fx-in var(--duration-slow) var(--ease-soft) both;
+}
+
+@keyframes fx-in {
+  from { opacity: 0; }
+}
+
+/* ---- Snow ---- */
+.fx-snow {
+  position: absolute;
+  top: 0;
+  animation: fx-fall var(--fall) linear infinite both;
+  will-change: transform;
+}
+
+.fx-snow__flake {
+  display: block;
+  border-radius: var(--radius-pill);
+  background: var(--color-snow);
+  filter: var(--shadow-snow);
+  animation: fx-sway var(--sway-time) ease-in-out infinite alternate;
+}
+
+@keyframes fx-fall {
+  from { transform: translateY(-5vh); }
+  to { transform: translateY(105vh); }
+}
+
+@keyframes fx-sway {
+  from { transform: translateX(calc(var(--sway) * -1)); }
+  to { transform: translateX(var(--sway)); }
+}
+
+/* ---- Hearts ---- */
+.fx-heart {
+  position: absolute;
+  bottom: 0;
+  opacity: 0;
+  filter: var(--shadow-drop);
+  animation: fx-rise var(--rise) ease-in infinite both;
+  will-change: transform, opacity;
+}
+
+.fx-heart--a { color: var(--color-rose); }
+.fx-heart--b { color: var(--color-mauve); }
+.fx-heart--c { color: var(--accent-soft); }
+
+@keyframes fx-rise {
+  0% { opacity: 0; transform: translate(0, 10vh) rotate(-8deg); }
+  10% { opacity: 0.85; }
+  50% { transform: translate(var(--sway), -50vh) rotate(8deg); }
+  85% { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(calc(var(--sway) * -1), -105vh) rotate(-6deg); }
+}
+
+/* ---- Fireworks ---- */
+.fx-firework {
+  position: absolute;
+  width: 0;
+  height: 0;
+  --spark: var(--color-rose);
+}
+
+.fx-firework--a { --spark: var(--color-mauve); }
+.fx-firework--b { --spark: var(--color-gold); }
+.fx-firework--c { --spark: var(--color-rose); }
+.fx-firework--d { --spark: var(--color-mauve-ink); }
+
+.fx-firework__rocket {
+  position: absolute;
+  left: -2px;
+  width: 4px;
+  height: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--spark);
+  opacity: 0;
+  animation: fx-rocket 0.6s ease-out var(--delay) both;
+}
+
+@keyframes fx-rocket {
+  0% { opacity: 1; transform: translateY(var(--climb)); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(0); }
+}
+
+.fx-firework__flash {
+  position: absolute;
+  left: -14px;
+  top: -14px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  background: var(--color-snow);
+  box-shadow: 0 0 24px 8px var(--spark);
+  opacity: 0;
+  animation: fx-flash 0.5s ease-out calc(var(--delay) + 0.6s) both;
+}
+
+@keyframes fx-flash {
+  0% { opacity: 0.9; transform: scale(0.3); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
+.fx-firework__spark {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--spark);
+  box-shadow: 0 0 6px var(--spark);
+  opacity: 0;
+  animation: fx-spark 1.5s cubic-bezier(0.15, 0.8, 0.3, 1) calc(var(--delay) + 0.6s) both;
+}
+
+@keyframes fx-spark {
+  0% { opacity: 1; transform: rotate(var(--a)) translateX(0) scale(1); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--a)) translateX(var(--r)) translateY(18px) scale(0.4); }
+}

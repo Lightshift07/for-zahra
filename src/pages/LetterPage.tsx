@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import Envelope from '../components/Envelope'
+import Snowman from '../components/effects/Snowman'
+import ThemeEffects from '../components/effects/ThemeEffects'
 import { ArrowLeftIcon, HeartIcon } from '../components/Icons'
-import { daysUntil, getLetter, isUnlocked, mediaUrl, renderBody, type Letter } from '../content'
+import { daysUntil, getLetter, isUnlocked, mediaUrl, renderBody, type Letter, type Theme } from '../content'
 import { countdownLabel, formatDate } from '../lib/format'
 import { envelopeDurationMs } from '../lib/motion'
 import { markOpened, useOpened } from '../lib/opened'
 import { useNow } from '../lib/useNow'
 import { usePageTitle } from '../lib/usePageTitle'
+import { useReducedMotion } from '../lib/useReducedMotion'
 import NotFound from './NotFound'
 import './LetterPage.css'
 
@@ -22,6 +25,13 @@ type Stage = 'sealed' | 'opening' | 'open'
 
 /** Fraction of --envelope-duration at which the full letter replaces the envelope (matches Envelope.css). */
 const LETTER_SWAP = 0.92
+
+/** Wording for the effect button on themed letters: [label while running, label while stopped]. */
+const FX_LABELS: Record<Theme, [string, string]> = {
+  christmas: ['Stop the snow', 'Let it snow'],
+  valentines: ['Stop the hearts', 'Bring back the hearts'],
+  'new-year': ['Fireworks again', 'Fireworks again'],
+}
 
 export default function LetterPage() {
   const { id = '' } = useParams()
@@ -38,6 +48,9 @@ function LetterView({ letter }: { letter: Letter }) {
   const unlocked = letter.section === 'when' || isUnlocked(letter, now)
   const [stage, setStage] = useState<Stage>(() => (opened.has(letter.id) ? 'opening' : 'sealed'))
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const reducedMotion = useReducedMotion()
+  const [fxOn, setFxOn] = useState(true)
+  const [fxRun, setFxRun] = useState(0)
 
   usePageTitle(letter.title)
 
@@ -117,10 +130,36 @@ function LetterView({ letter }: { letter: Letter }) {
     )
   }
 
+  // Themed effects appear only now, once the letter is open (never on cards or the envelope).
+  const theme = letter.theme
+  const showFx = theme !== null && !reducedMotion
+  const fxButton = showFx && (
+    <button
+      type="button"
+      className="letter__fx-btn"
+      aria-pressed={theme === 'new-year' ? undefined : fxOn}
+      onClick={() => {
+        if (theme === 'new-year') {
+          setFxOn(true)
+          setFxRun((r) => r + 1)
+        } else {
+          setFxOn((on) => !on)
+        }
+      }}
+    >
+      {FX_LABELS[theme][theme === 'new-year' || fxOn ? 0 : 1]}
+    </button>
+  )
+
   return (
-    <main className="letter">
-      {back}
+    <main className={`letter${theme ? ` letter--${theme}` : ''}`}>
+      <div className="letter__topbar">
+        {back}
+        {fxButton}
+      </div>
+      {showFx && <ThemeEffects theme={theme} active={fxOn} run={fxRun} />}
       <article className="letter__paper" aria-labelledby="letter-title">
+        {theme === 'christmas' && <Snowman />}
         <span className="letter__seal">
           <HeartIcon size={22} />
         </span>
