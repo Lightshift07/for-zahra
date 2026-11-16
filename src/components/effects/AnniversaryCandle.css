@@ -1,0 +1,72 @@
+.candle {
+  position: absolute;
+  top: 0;
+  right: var(--space-5);
+  z-index: 2;
+  height: auto;
+  overflow: visible;
+  filter: var(--shadow-drop);
+  transform: translateY(-74%);
+}
+
+.candle__stripe-a { fill: var(--color-snow); }
+.candle__stripe-b { fill: var(--color-rose); }
+
+.candle__number {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 84px;
+  stroke: var(--color-mauve);
+  stroke-width: 2.5;
+  paint-order: stroke;
+}
+
+.candle__wick {
+  stroke: var(--color-plum);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+.candle__flame-outer { fill: var(--color-flame); }
+.candle__flame-inner { fill: var(--color-gold); }
+
+.candle__glow-in { stop-color: var(--color-gold); stop-opacity: 0.55; }
+.candle__glow-out { stop-color: var(--color-gold); stop-opacity: 0; }
+
+/* A real flame never repeats exactly: two loops of different lengths, uneven keyframes. */
+@media (prefers-reduced-motion: no-preference) {
+  .candle__flame {
+    animation: flame-sway 1.7s ease-in-out infinite;
+  }
+
+  .candle__flame-inner {
+    animation: flame-flicker 0.43s ease-in-out infinite alternate;
+  }
+
+  .candle__glow {
+    transform-origin: center 22px;
+    transform-box: fill-box;
+    animation: flame-glow 1.3s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes flame-sway {
+  0%   { transform: rotate(0deg) scale(1, 1); }
+  15%  { transform: rotate(-4deg) scale(0.97, 1.05); }
+  32%  { transform: rotate(3deg) scale(1.03, 0.94); }
+  48%  { transform: rotate(-2deg) skewX(3deg) scale(0.98, 1.07); }
+  63%  { transform: rotate(5deg) scale(1.02, 0.96); }
+  80%  { transform: rotate(-3deg) skewX(-2deg) scale(0.99, 1.04); }
+  100% { transform: rotate(0deg) scale(1, 1); }
+}
+
+@keyframes flame-flicker {
+  0%   { transform: scale(1, 1); opacity: 1; }
+  50%  { transform: scale(0.9, 1.1); opacity: 0.85; }
+  100% { transform: scale(1.05, 0.92); opacity: 1; }
+}
+
+@keyframes flame-glow {
+  from { opacity: 0.7; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1.08); }
+}

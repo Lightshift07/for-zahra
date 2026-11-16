@@ -39,10 +39,12 @@
   cursor: pointer;
 }
 
-/* Room above the sheet for the Christmas snowman / birthday hat / crown. */
+/* Room above the sheet for the decorations perched on its corner. */
 .letter--christmas .letter__paper,
 .letter--birthday .letter__paper,
-.letter--girlfriend-day .letter__paper {
+.letter--girlfriend-day .letter__paper,
+.letter--anniversary .letter__paper,
+.letter--graduation .letter__paper {
   margin-top: calc(var(--space-7) + var(--space-5));
 }
 

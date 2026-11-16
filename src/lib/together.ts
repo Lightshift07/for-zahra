@@ -32,3 +32,11 @@ export function together(now: Date): Together {
 
   return { days: Math.max(0, days), months, extraDays }
 }
+
+/** Whole years from TOGETHER_SINCE to `isoDate` (e.g. 2027-06-30 → 1). Used for the anniversary candle. */
+export function yearsTogetherOn(isoDate: string): number {
+  const [sy, sm, sd] = TOGETHER_SINCE.split('-').map(Number)
+  const [y, m, d] = isoDate.split('-').map(Number)
+  const years = y - sy - (m < sm || (m === sm && d < sd) ? 1 : 0)
+  return Math.max(1, years)
+}

@@ -62,7 +62,7 @@ src/
   pages/                     route components (+ co-located .css): Home, OpenWhen, OpenOn, LetterPage, NotFound, ContentProblems
   components/                shared components (+ co-located .css): LetterCard, Envelope, TabBar, PageHeader, TogetherCounter, InstallHint, Icons
     PickForMe.tsx            "Pick one for me" shuffle on the Open When page
-    effects/                 ThemeEffects (snow / hearts / fireworks / streamers / sparkles overlay) + Snowman, PartyHat, PartyGarland, Crown
+    effects/                 ThemeEffects (snow / hearts / fireworks / streamers / sparkles overlay) + corner decorations: Snowman, PartyHat, PartyGarland, Crown, AnniversaryCandle, GraduationGown
   lib/
     useNow.ts                live current time: fires at 12am Eastern, every minute, and on return to foreground
     opened.ts                which letters were opened on this device (localStorage) → "New" badges
@@ -70,7 +70,7 @@ src/
     usePageTitle.ts          sets document.title per route
     motion.ts                envelopeDurationMs(): reads --envelope-duration so CSS and JS stay in sync
     useReducedMotion.ts      live prefers-reduced-motion flag
-    together.ts              TOGETHER_SINCE (2026-06-30) + days/months together, in Eastern calendar days
+    together.ts              TOGETHER_SINCE (2026-06-30) + days/months together (Eastern calendar days) + yearsTogetherOn() for the candle
     autoUpdate.ts            registers sw.js; useAutoUpdate() reloads into a newer deploy (never mid-letter)
   globals.d.ts               declares __APP_VERSION__
   styles/
@@ -134,7 +134,7 @@ photos:                            # optional · list
   - file: christmas-2026/us.jpg    #   …with alt text (preferred, see Accessibility)
     alt: Us by the tree, laughing
 voiceNote: christmas-2026/hi.m4a   # optional · one audio file
-theme: christmas                   # optional · christmas | valentines | new-year | birthday | girlfriend-day (see "Themed letters")
+theme: christmas                   # optional · christmas | valentines | new-year | birthday | girlfriend-day | anniversary | graduation (see "Themed letters")
 ---
 Merry Christmas, my love!
 
@@ -147,7 +147,7 @@ Rules the validator enforces (see `src/content/schema.ts`):
 - `unlockDate` must be a real calendar date (`2027-02-30` is rejected).
 - Photos must be jpg/jpeg/png/webp/avif/gif/svg. Voice notes must be m4a/mp3/aac/ogg/opus/wav/webm. Every referenced file must exist in `content/media/`.
 - The body can't be empty.
-- `theme`, if present, must be one of `christmas`, `valentines`, `new-year`, `birthday`, `girlfriend-day`.
+- `theme`, if present, must be one of `christmas`, `valentines`, `new-year`, `birthday`, `girlfriend-day`, `anniversary`, `graduation`. `anniversary` also needs an Open On letter with a real `unlockDate`.
 
 ### Themed letters
 
@@ -160,10 +160,12 @@ Add `theme:` to any letter (either section) to give it a full-screen effect **on
 | `new-year` | a ~5 second fireworks show as the letter opens | "Fireworks again" |
 | `birthday` | curly streamers + confetti fluttering down the screen, a streamer garland draped across the top of the letter, and a striped party hat on its top-right corner | "Stop the streamers" / "More streamers" |
 | `girlfriend-day` | gold and pink sparkles twinkling across the screen, and a gold crown (gems + pearls) on the letter's top-right corner | "Stop the sparkles" / "More sparkles" |
+| `anniversary` | a striped **number candle** with a flickering flame on the letter's corner. The number is worked out automatically from the letter's `unlockDate` (whole years since 2026-06-30, so `2027-06-30` → **1**, `2028-06-30` → **2**). Open On letters with a real date only (the build rejects anything else). Decoration only. | none |
+| `graduation` | a little graduation gown (gold stole, diploma) wearing a mortarboard with a swaying gold tassel, on the letter's corner. Decoration only. | none |
 
-Currently themed: `christmas-2026` (christmas), `new-years-2027` (new-year), `valentines-2027` (valentines), `birthday-2027` (birthday), `girlfriend-day-2027` (girlfriend-day). Future years just add the same line, e.g. `christmas-2027.md` with `theme: christmas`.
+Currently themed: `christmas-2026` (christmas), `new-years-2027` (new-year), `valentines-2027` (valentines), `birthday-2027` (birthday), `girlfriend-day-2027` (girlfriend-day), `one-year-anniversary` (anniversary), `school-finished` (graduation). Future years just add the same line, e.g. `christmas-2027.md` with `theme: christmas`.
 
-Rules (`src/components/effects/`): the overlay is `aria-hidden` and `pointer-events: none`, so it never blocks taps or reading. Continuous effects must always have a stop button. Under `prefers-reduced-motion` no moving effects are rendered (the snowman, party hat, garland and crown still show, still). Effect colours are decorative tokens (`--color-snow`, `--color-gold`, `--color-gold-deep`, `--shadow-snow`). To add a new theme, add it to `THEMES` in `schema.ts`, render it in `ThemeEffects.tsx`, and add its button labels in `LetterPage.tsx`.
+Rules (`src/components/effects/`): the overlay is `aria-hidden` and `pointer-events: none`, so it never blocks taps or reading. Continuous effects must always have a stop button. Under `prefers-reduced-motion` no moving effects are rendered (the snowman, party hat, garland, crown, candle and cap-and-gown still show, still: the candle flame and tassel stop moving). Effect colours are decorative tokens (`--color-snow`, `--color-gold`, `--color-gold-deep`, `--color-flame`, `--shadow-snow`). To add a new theme, add it to `THEMES` in `schema.ts`. For a full-screen effect, render it in `ThemeEffects.tsx` and add its button labels to `FX_LABELS` in `LetterPage.tsx`. A decoration-only theme has no `FX_LABELS` entry, so it gets no overlay and no button. Its corner decoration is rendered inside `.letter__paper` in `LetterPage.tsx`.
 
 Media guidance: resize photos to about 1600px on the long edge and keep them under about 400 KB (JPEG/WebP). For voice notes, use **AAC `.m4a` or `.mp3`**, because those play on iPhone Safari. Avoid `.ogg`/`.opus` for anything she needs to hear on iOS. Files under 4 KB get inlined into the JS by Vite, which is fine.
 

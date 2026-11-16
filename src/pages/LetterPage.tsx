@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import Envelope from '../components/Envelope'
+import AnniversaryCandle from '../components/effects/AnniversaryCandle'
 import Crown from '../components/effects/Crown'
+import GraduationGown from '../components/effects/GraduationGown'
 import PartyGarland from '../components/effects/PartyGarland'
 import PartyHat from '../components/effects/PartyHat'
 import Snowman from '../components/effects/Snowman'
@@ -12,6 +14,7 @@ import { countdownLabel, formatDate } from '../lib/format'
 import { envelopeDurationMs } from '../lib/motion'
 import { markOpened, useOpened } from '../lib/opened'
 import { useNow } from '../lib/useNow'
+import { yearsTogetherOn } from '../lib/together'
 import { usePageTitle } from '../lib/usePageTitle'
 import { useReducedMotion } from '../lib/useReducedMotion'
 import NotFound from './NotFound'
@@ -30,7 +33,7 @@ type Stage = 'sealed' | 'opening' | 'open'
 const LETTER_SWAP = 0.92
 
 /** Wording for the effect button on themed letters: [label while running, label while stopped]. */
-const FX_LABELS: Record<Theme, [string, string]> = {
+const FX_LABELS: Partial<Record<Theme, [string, string]>> = {
   christmas: ['Stop the snow', 'Let it snow'],
   valentines: ['Stop the hearts', 'Bring back the hearts'],
   'new-year': ['Fireworks again', 'Fireworks again'],
@@ -137,8 +140,10 @@ function LetterView({ letter }: { letter: Letter }) {
 
   // Themed effects appear only now, once the letter is open (never on cards or the envelope).
   const theme = letter.theme
-  const showFx = theme !== null && !reducedMotion
-  const fxButton = showFx && (
+  // Some themes are decoration only (candle, cap and gown): no screen effect, no button.
+  const labels = theme ? FX_LABELS[theme] : undefined
+  const showFx = theme !== null && labels !== undefined && !reducedMotion
+  const fxButton = showFx && labels && (
     <button
       type="button"
       className="letter__fx-btn"
@@ -152,7 +157,7 @@ function LetterView({ letter }: { letter: Letter }) {
         }
       }}
     >
-      {FX_LABELS[theme][theme === 'new-year' || fxOn ? 0 : 1]}
+      {labels[theme === 'new-year' || fxOn ? 0 : 1]}
     </button>
   )
 
@@ -166,6 +171,10 @@ function LetterView({ letter }: { letter: Letter }) {
       <article className="letter__paper" aria-labelledby="letter-title">
         {theme === 'christmas' && <Snowman />}
         {theme === 'girlfriend-day' && <Crown />}
+        {theme === 'anniversary' && letter.section === 'on' && letter.unlockDate && (
+          <AnniversaryCandle years={yearsTogetherOn(letter.unlockDate)} />
+        )}
+        {theme === 'graduation' && <GraduationGown />}
         {theme === 'birthday' && (
           <>
             <PartyGarland />

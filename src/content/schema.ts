@@ -11,7 +11,7 @@ import { parse as parseYaml } from 'yaml'
 export type Section = 'when' | 'on'
 
 /** Optional full-screen effect shown once a letter is open. */
-export const THEMES = ['christmas', 'valentines', 'new-year', 'birthday', 'girlfriend-day'] as const
+export const THEMES = ['christmas', 'valentines', 'new-year', 'birthday', 'girlfriend-day', 'anniversary', 'graduation'] as const
 export type Theme = (typeof THEMES)[number]
 
 export interface Photo {
@@ -30,7 +30,7 @@ interface LetterBase {
   photos: Photo[]
   /** Filename relative to /content/media/, or null. */
   voiceNote: string | null
-  /** Optional effect once the letter is open: snow + snowman, floating hearts, fireworks, streamers + party hat, or sparkles + crown. */
+  /** Optional effect once the letter is open: snow + snowman, floating hearts, fireworks, streamers + party hat, sparkles + crown, a lit number candle, or a cap and gown. */
   theme: Theme | null
   /** Raw Markdown body (everything after the frontmatter). */
   body: string
@@ -233,6 +233,8 @@ export function parseLetter(
   if (fm.theme !== undefined && fm.theme !== null) {
     if (typeof fm.theme !== 'string' || !(THEMES as readonly string[]).includes(fm.theme)) {
       fail(`"theme" must be one of: ${THEMES.join(', ')} (got ${JSON.stringify(fm.theme)}).`)
+    } else if (fm.theme === 'anniversary' && (section !== 'on' || unlockDate === null)) {
+      fail('"theme: anniversary" needs an Open On letter with a real unlockDate (the candle shows how many years that date is).')
     } else {
       theme = fm.theme as Theme
     }
