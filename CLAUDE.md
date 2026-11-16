@@ -158,7 +158,7 @@ Implemented in `src/content/unlock.ts`. Don't duplicate this logic anywhere else
 
 Yearly occasions get a new file per year (e.g. `birthday-2028.md`) instead of reusing old ones, so past letters stay readable.
 - `unlockDate: YYYY-MM-DD` unlocks at **00:00 in the viewer's local time** on that day. Christmas opens at midnight wherever Zahra's phone is.
-- `unlockDate: null` means **date TBD**. It always stays locked and shows "Date to be revealed" (no countdown). Use this for the anniversaries, her birthday and "after school is finished" until the date is known.
+- `unlockDate: null` means **date TBD**. It always stays locked and shows "Date to be revealed" (no countdown). Use it for any occasion whose date is not known yet (currently only "school finished").
 - A locked card shows its title, teaser and the date or countdown, but **never** any body text, photos or voice note.
 - Once unlocked, a letter stays open forever.
 - Countdown: `daysUntil()` gives whole calendar days. 0 means today.
