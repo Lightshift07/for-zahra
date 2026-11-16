@@ -171,3 +171,22 @@
   0% { transform: rotate(0deg) rotateX(0deg); }
   100% { transform: rotate(240deg) rotateX(360deg); }
 }
+
+/* ---- Girlfriend Day sparkles ---- */
+.fx-sparkle {
+  position: absolute;
+  opacity: 0;
+  filter: var(--shadow-drop);
+  animation: fx-twinkle var(--twinkle) ease-in-out infinite both;
+  will-change: transform, opacity;
+}
+
+.fx-sparkle--a { fill: var(--color-gold); }
+.fx-sparkle--b { fill: var(--color-rose); }
+.fx-sparkle--c { fill: var(--color-mauve); }
+
+@keyframes fx-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.2) rotate(0deg); }
+  45% { opacity: 1; transform: scale(1) rotate(45deg); }
+  60% { opacity: 0.9; transform: scale(0.85) rotate(60deg); }
+}

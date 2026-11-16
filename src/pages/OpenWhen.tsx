@@ -1,5 +1,6 @@
 import LetterCard from '../components/LetterCard'
 import PageHeader from '../components/PageHeader'
+import PickForMe from '../components/PickForMe'
 import { whenLetters } from '../content'
 import { useNow } from '../lib/useNow'
 import { useOpened } from '../lib/opened'
@@ -12,6 +13,7 @@ export default function OpenWhen() {
   return (
     <main className="page">
       <PageHeader title="Open when…" intro="Whenever you need me. These are always open." />
+      <PickForMe letters={whenLetters} />
       <ul className="card-list">
         {whenLetters.map((l, i) => (
           <li key={l.id}>

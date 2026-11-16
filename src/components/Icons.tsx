@@ -69,3 +69,11 @@ export const PlayNoteIcon = (p: IconProps) => (
     <circle cx="16.5" cy="16" r="2.5" />
   </Svg>
 )
+
+export const ShuffleIcon = (p: IconProps) => (
+  <Svg {...p}>
+    <path d="M3 7h3.5c2 0 3.2 1 4.3 2.6l2.4 4.8C14.3 16 15.5 17 17.5 17H21" />
+    <path d="M3 17h3.5c2 0 3.2-1 4.3-2.6M13.2 9.6C14.3 8 15.5 7 17.5 7H21" />
+    <path d="M18.5 4.5 21 7l-2.5 2.5M18.5 14.5 21 17l-2.5 2.5" />
+  </Svg>
+)

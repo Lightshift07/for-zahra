@@ -1,0 +1,48 @@
+.crown {
+  position: absolute;
+  top: 0;
+  right: var(--space-5);
+  z-index: 2;
+  width: 4.5rem;
+  height: auto;
+  filter: var(--shadow-drop);
+  transform: translateY(-72%) rotate(12deg);
+  transform-origin: bottom center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .crown {
+    animation: crown-bob 3s ease-in-out infinite;
+  }
+}
+
+@keyframes crown-bob {
+  0%, 100% { transform: translateY(-72%) rotate(12deg); }
+  50% { transform: translateY(-78%) rotate(7deg); }
+}
+
+.crown__body {
+  fill: var(--color-gold);
+  stroke: var(--color-gold-deep);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.crown__shade { fill: var(--color-gold-deep); opacity: 0.35; }
+
+.crown__band {
+  fill: var(--color-gold);
+  stroke: var(--color-gold-deep);
+  stroke-width: 1.5;
+}
+
+.crown__gem--rose { fill: var(--color-rose); }
+.crown__gem--mauve { fill: var(--color-mauve); }
+
+.crown__pearl {
+  fill: var(--color-snow);
+  stroke: var(--color-gold-deep);
+  stroke-width: 1.2;
+}
+
+.crown__glint { fill: var(--color-snow); }

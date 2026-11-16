@@ -4,6 +4,7 @@ title: Open on National Girlfriend Day
 teaser: A day just for you (as if you need an excuse).
 order: 6
 unlockDate: 2027-08-01
+theme: girlfriend-day
 ---
 My love,
 

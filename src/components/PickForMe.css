@@ -1,0 +1,88 @@
+.pick {
+  margin-bottom: var(--space-5);
+}
+
+/* plum on rose 5.88 */
+.pick__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  box-shadow: var(--shadow-md);
+  color: var(--text-body);
+  font-size: var(--text-md);
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--duration-base) var(--ease-soft);
+}
+
+.pick__btn:active {
+  transform: scale(0.97);
+}
+
+/* Same height as the content it replaces would roughly be, so the list doesn't jump. */
+.pick__panel {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  min-height: 7rem;
+  padding: var(--space-4) var(--space-5);
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+/* mauve-ink on white 7.17 */
+.pick__label {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pick__title {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: var(--text-lg);
+  line-height: 1.2;
+  animation: pick-flip 110ms ease-out both;
+}
+
+@keyframes pick-flip {
+  from {
+    opacity: 0;
+    transform: translateY(-45%);
+  }
+}
+
+.pick__panel--landed {
+  background: var(--bg-card);
+  box-shadow: var(--shadow-lg);
+  animation: pick-land var(--duration-slow) var(--ease-soft) both;
+}
+
+.pick__panel--landed .pick__title {
+  animation: pick-pop var(--duration-slow) var(--ease-soft) both;
+}
+
+@keyframes pick-land {
+  40% { transform: scale(1.04); }
+}
+
+@keyframes pick-pop {
+  0% { opacity: 0; transform: scale(0.7); }
+  60% { opacity: 1; transform: scale(1.08); }
+}

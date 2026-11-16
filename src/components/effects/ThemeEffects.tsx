@@ -11,6 +11,7 @@ import './ThemeEffects.css'
  *   valentines → hearts floating up (continuous; she can stop it)
  *   new-year   → a fireworks show (~5s; she can light it again)
  *   birthday   → curly streamers + confetti fluttering down (continuous; she can stop it)
+ *   girlfriend-day → gold + pink sparkles twinkling across the screen (continuous; she can stop it)
  */
 
 const rand = (min: number, max: number) => min + Math.random() * (max - min)
@@ -145,6 +146,33 @@ function Streamers() {
   )
 }
 
+function Sparkles() {
+  const [sparkles] = useState(() =>
+    Array.from({ length: 34 }, () => ({
+      left: rand(3, 95),
+      top: rand(3, 95),
+      size: Math.round(rand(10, 26)),
+      twinkle: rand(1.8, 3.6),
+      delay: rand(-3, 2.5),
+      tone: pick(['a', 'a', 'b', 'c'] as const),
+    })),
+  )
+  return (
+    <>
+      {sparkles.map((s, i) => (
+        <svg
+          key={i}
+          className={`fx-sparkle fx-sparkle--${s.tone}`}
+          viewBox="0 0 24 24"
+          style={{ left: `${s.left}%`, top: `${s.top}%`, width: s.size, height: s.size, '--twinkle': `${s.twinkle}s`, animationDelay: `${s.delay}s` } as Vars}
+        >
+          <path d="M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0 Z" />
+        </svg>
+      ))}
+    </>
+  )
+}
+
 /** `run` changes → fireworks restart. `active` false → continuous effects stop. */
 export default function ThemeEffects({ theme, active, run }: { theme: Theme; active: boolean; run: number }) {
   if (!active) return null
@@ -154,6 +182,7 @@ export default function ThemeEffects({ theme, active, run }: { theme: Theme; act
       {theme === 'valentines' && <FloatingHearts />}
       {theme === 'new-year' && <Fireworks key={run} />}
       {theme === 'birthday' && <Streamers />}
+      {theme === 'girlfriend-day' && <Sparkles />}
     </div>
   )
 }

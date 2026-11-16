@@ -20,7 +20,8 @@
   --color-lavender: #e8ddf5;
   /* Decorative-only colours for themed effects (never used for text) */
   --color-snow: #ffffff;
-  --color-gold: #e9b872;      /* fireworks sparks, snowman's carrot nose */
+  --color-gold: #e9b872;      /* fireworks sparks, snowman's carrot nose, crown */
+  --color-gold-deep: #c98f3d; /* crown outline + shading */
 
   /* ---- Semantic roles (use these in components) ---- */
   --bg-page: var(--color-cream);
