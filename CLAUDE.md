@@ -61,7 +61,7 @@ src/
   layouts/AppShell.tsx       wraps every route: tab bar, scroll restoration, focus-to-<h1> on navigation
   pages/                     route components (+ co-located .css): Home, OpenWhen, OpenOn, LetterPage, NotFound, ContentProblems
   components/                shared components (+ co-located .css): LetterCard, Envelope, TabBar, PageHeader, TogetherCounter, InstallHint, Icons
-    effects/                 ThemeEffects (snow / floating hearts / fireworks overlay) + Snowman
+    effects/                 ThemeEffects (snow / hearts / fireworks / streamers overlay) + Snowman, PartyHat, PartyGarland
   lib/
     useNow.ts                live current time: fires at 12am Eastern, every minute, and on return to foreground
     opened.ts                which letters were opened on this device (localStorage) → "New" badges
@@ -130,7 +130,7 @@ photos:                            # optional · list
   - file: christmas-2026/us.jpg    #   …with alt text (preferred, see Accessibility)
     alt: Us by the tree, laughing
 voiceNote: christmas-2026/hi.m4a   # optional · one audio file
-theme: christmas                   # optional · christmas | valentines | new-year (see "Themed letters")
+theme: christmas                   # optional · christmas | valentines | new-year | birthday (see "Themed letters")
 ---
 Merry Christmas, my love!
 
@@ -143,7 +143,7 @@ Rules the validator enforces (see `src/content/schema.ts`):
 - `unlockDate` must be a real calendar date (`2027-02-30` is rejected).
 - Photos must be jpg/jpeg/png/webp/avif/gif/svg. Voice notes must be m4a/mp3/aac/ogg/opus/wav/webm. Every referenced file must exist in `content/media/`.
 - The body can't be empty.
-- `theme`, if present, must be one of `christmas`, `valentines`, `new-year`.
+- `theme`, if present, must be one of `christmas`, `valentines`, `new-year`, `birthday`.
 
 ### Themed letters
 
@@ -154,10 +154,11 @@ Add `theme:` to any letter (either section) to give it a full-screen effect **on
 | `christmas` | snow falling down the screen + a snowman perched on the letter's top-right corner | "Stop the snow" / "Let it snow" |
 | `valentines` | hearts floating up the screen | "Stop the hearts" / "Bring back the hearts" |
 | `new-year` | a ~5 second fireworks show as the letter opens | "Fireworks again" |
+| `birthday` | curly streamers + confetti fluttering down the screen, a streamer garland draped across the top of the letter, and a striped party hat on its top-right corner | "Stop the streamers" / "More streamers" |
 
-Currently themed: `christmas-2026` (christmas), `new-years-2027` (new-year), `valentines-2027` (valentines). Future years just add the same line, e.g. `christmas-2027.md` with `theme: christmas`.
+Currently themed: `christmas-2026` (christmas), `new-years-2027` (new-year), `valentines-2027` (valentines), `birthday-2027` (birthday). Future years just add the same line, e.g. `christmas-2027.md` with `theme: christmas`.
 
-Rules (`src/components/effects/`): the overlay is `aria-hidden` and `pointer-events: none`, so it never blocks taps or reading. Continuous effects must always have a stop button. Under `prefers-reduced-motion` no moving effects are rendered (the snowman still shows, still). Effect colours are decorative tokens (`--color-snow`, `--color-gold`, `--shadow-snow`). To add a new theme, add it to `THEMES` in `schema.ts`, render it in `ThemeEffects.tsx`, and add its button labels in `LetterPage.tsx`.
+Rules (`src/components/effects/`): the overlay is `aria-hidden` and `pointer-events: none`, so it never blocks taps or reading. Continuous effects must always have a stop button. Under `prefers-reduced-motion` no moving effects are rendered (the snowman, party hat and garland still show, still). Effect colours are decorative tokens (`--color-snow`, `--color-gold`, `--shadow-snow`). To add a new theme, add it to `THEMES` in `schema.ts`, render it in `ThemeEffects.tsx`, and add its button labels in `LetterPage.tsx`.
 
 Media guidance: resize photos to about 1600px on the long edge and keep them under about 400 KB (JPEG/WebP). For voice notes, use **AAC `.m4a` or `.mp3`**, because those play on iPhone Safari. Avoid `.ogg`/`.opus` for anything she needs to hear on iOS. Files under 4 KB get inlined into the JS by Vite, which is fine.
 

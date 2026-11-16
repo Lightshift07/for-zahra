@@ -1,0 +1,35 @@
+.party-hat {
+  position: absolute;
+  top: 0;
+  right: var(--space-5);
+  z-index: 2;
+  width: 4.25rem;
+  height: auto;
+  filter: var(--shadow-drop);
+  transform: translateY(-78%) rotate(14deg);
+  transform-origin: bottom center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .party-hat {
+    animation: party-hat-bob 2.8s ease-in-out infinite;
+  }
+}
+
+@keyframes party-hat-bob {
+  0%, 100% { transform: translateY(-78%) rotate(14deg); }
+  50% { transform: translateY(-84%) rotate(8deg); }
+}
+
+.party-hat__cone { fill: var(--color-rose); }
+.party-hat__stripe { fill: var(--color-mauve); }
+.party-hat__dot { fill: var(--color-gold); }
+.party-hat__brim { fill: var(--color-gold); }
+.party-hat__pom { fill: var(--color-gold); }
+
+.party-hat__pom-line {
+  fill: none;
+  stroke: var(--color-snow);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}

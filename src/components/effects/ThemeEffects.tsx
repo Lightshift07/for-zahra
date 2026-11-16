@@ -10,6 +10,7 @@ import './ThemeEffects.css'
  *   christmas  → snow falling (continuous; she can stop it)
  *   valentines → hearts floating up (continuous; she can stop it)
  *   new-year   → a fireworks show (~5s; she can light it again)
+ *   birthday   → curly streamers + confetti fluttering down (continuous; she can stop it)
  */
 
 const rand = (min: number, max: number) => min + Math.random() * (max - min)
@@ -104,6 +105,46 @@ function Fireworks() {
   )
 }
 
+function Streamers() {
+  const [pieces] = useState(() =>
+    Array.from({ length: 48 }, (_, i) => ({
+      kind: i % 3 === 0 ? 'confetti' : 'streamer',
+      left: rand(0, 100),
+      fall: rand(6, 11),
+      delay: rand(-5, 5),
+      sway: rand(10, 28),
+      spin: rand(1.2, 3),
+      scale: rand(0.8, 1.35),
+      tone: pick(['a', 'b', 'c', 'd'] as const),
+    })),
+  )
+  return (
+    <>
+      {pieces.map((p, i) => (
+        <span
+          key={i}
+          className={`fx-streamer fx-streamer--${p.tone}`}
+          style={{ left: `${p.left}%`, '--fall': `${p.fall}s`, animationDelay: `${p.delay}s` } as Vars}
+        >
+          <span className="fx-streamer__sway" style={{ '--sway': `${p.sway}px`, '--sway-time': `${p.spin * 1.6}s` } as Vars}>
+            {p.kind === 'streamer' ? (
+              <svg
+                className="fx-streamer__piece"
+                viewBox="0 0 12 40"
+                style={{ '--spin': `${p.spin}s`, width: 12 * p.scale, height: 40 * p.scale } as Vars}
+              >
+                <path d="M6 2 Q11 7 6 12 T6 22 T6 32 T6 38" />
+              </svg>
+            ) : (
+              <span className="fx-confetti" style={{ '--spin': `${p.spin}s`, width: 9 * p.scale, height: 6 * p.scale } as Vars} />
+            )}
+          </span>
+        </span>
+      ))}
+    </>
+  )
+}
+
 /** `run` changes → fireworks restart. `active` false → continuous effects stop. */
 export default function ThemeEffects({ theme, active, run }: { theme: Theme; active: boolean; run: number }) {
   if (!active) return null
@@ -112,6 +153,7 @@ export default function ThemeEffects({ theme, active, run }: { theme: Theme; act
       {theme === 'christmas' && <Snowfall />}
       {theme === 'valentines' && <FloatingHearts />}
       {theme === 'new-year' && <Fireworks key={run} />}
+      {theme === 'birthday' && <Streamers />}
     </div>
   )
 }

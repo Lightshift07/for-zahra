@@ -11,7 +11,7 @@ import { parse as parseYaml } from 'yaml'
 export type Section = 'when' | 'on'
 
 /** Optional full-screen effect shown once a letter is open. */
-export const THEMES = ['christmas', 'valentines', 'new-year'] as const
+export const THEMES = ['christmas', 'valentines', 'new-year', 'birthday'] as const
 export type Theme = (typeof THEMES)[number]
 
 export interface Photo {
@@ -30,7 +30,7 @@ interface LetterBase {
   photos: Photo[]
   /** Filename relative to /content/media/, or null. */
   voiceNote: string | null
-  /** Optional effect once the letter is open: snow + snowman, floating hearts, or fireworks. */
+  /** Optional effect once the letter is open: snow + snowman, floating hearts, fireworks, or streamers + party hat. */
   theme: Theme | null
   /** Raw Markdown body (everything after the frontmatter). */
   body: string

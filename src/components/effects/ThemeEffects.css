@@ -126,3 +126,48 @@
   70% { opacity: 1; }
   100% { opacity: 0; transform: rotate(var(--a)) translateX(var(--r)) translateY(18px) scale(0.4); }
 }
+
+/* ---- Birthday streamers + confetti ---- */
+.fx-streamer {
+  position: absolute;
+  top: 0;
+  --c: var(--color-rose);
+  animation: fx-fall var(--fall) linear infinite both;
+  will-change: transform;
+}
+
+.fx-streamer--a { --c: var(--color-rose); }
+.fx-streamer--b { --c: var(--color-mauve); }
+.fx-streamer--c { --c: var(--color-gold); }
+.fx-streamer--d { --c: var(--color-mauve-ink); }
+
+.fx-streamer__sway {
+  display: block;
+  animation: fx-sway var(--sway-time) ease-in-out infinite alternate;
+}
+
+.fx-streamer__piece {
+  display: block;
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: var(--shadow-drop);
+  animation: fx-spin var(--spin) linear infinite;
+}
+
+.fx-confetti {
+  display: block;
+  border-radius: 2px;
+  background: var(--c);
+  animation: fx-flip var(--spin) linear infinite;
+}
+
+@keyframes fx-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fx-flip {
+  0% { transform: rotate(0deg) rotateX(0deg); }
+  100% { transform: rotate(240deg) rotateX(360deg); }
+}

@@ -39,8 +39,9 @@
   cursor: pointer;
 }
 
-/* Room above the sheet for the Christmas snowman. */
-.letter--christmas .letter__paper {
+/* Room above the sheet for the Christmas snowman / birthday hat. */
+.letter--christmas .letter__paper,
+.letter--birthday .letter__paper {
   margin-top: calc(var(--space-7) + var(--space-5));
 }
 

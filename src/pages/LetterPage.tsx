@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import Envelope from '../components/Envelope'
+import PartyGarland from '../components/effects/PartyGarland'
+import PartyHat from '../components/effects/PartyHat'
 import Snowman from '../components/effects/Snowman'
 import ThemeEffects from '../components/effects/ThemeEffects'
 import { ArrowLeftIcon, HeartIcon } from '../components/Icons'
@@ -31,6 +33,7 @@ const FX_LABELS: Record<Theme, [string, string]> = {
   christmas: ['Stop the snow', 'Let it snow'],
   valentines: ['Stop the hearts', 'Bring back the hearts'],
   'new-year': ['Fireworks again', 'Fireworks again'],
+  birthday: ['Stop the streamers', 'More streamers'],
 }
 
 export default function LetterPage() {
@@ -160,6 +163,12 @@ function LetterView({ letter }: { letter: Letter }) {
       {showFx && <ThemeEffects theme={theme} active={fxOn} run={fxRun} />}
       <article className="letter__paper" aria-labelledby="letter-title">
         {theme === 'christmas' && <Snowman />}
+        {theme === 'birthday' && (
+          <>
+            <PartyGarland />
+            <PartyHat />
+          </>
+        )}
         <span className="letter__seal">
           <HeartIcon size={22} />
         </span>
