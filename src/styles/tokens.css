@@ -1,0 +1,88 @@
+/*
+ * Design tokens — the single source of truth for colour, type, radius,
+ * shadow, spacing and motion. Components reference these variables only;
+ * never hard-code a hex value, font name or shadow anywhere else.
+ *
+ * Contrast (WCAG 2.x, computed):
+ *   plum  #5A3A4E on cream 9.30 · blush 8.17 · petal 7.21 · lavender 7.48 · rose 5.88  → AA (normal text) everywhere
+ *   mauve #B5779A on cream 3.29 · blush 2.89                                            → FAILS AA as text; decoration / ≥24px display on cream only
+ *   mauve-ink #7E4566 on cream 6.82 · blush 5.99 · petal 5.29 · lavender 5.49 · rose 4.31 → use for links & small accent text (not on rose)
+ */
+:root {
+  /* ---- Palette ---- */
+  --color-blush: #ffe4ec;
+  --color-rose: #f8b7cc;
+  --color-petal: #fbd3e0;
+  --color-cream: #fff8f5;
+  --color-mauve: #b5779a;      /* accents, icons, borders, large display text only */
+  --color-mauve-ink: #7e4566;  /* AA-safe mauve for links and small accent text */
+  --color-plum: #5a3a4e;       /* body text */
+  --color-lavender: #e8ddf5;
+
+  /* ---- Semantic roles (use these in components) ---- */
+  --bg-page: var(--color-cream);
+  --bg-surface: #ffffff;
+  --bg-card: var(--color-blush);
+  --bg-card-alt: var(--color-lavender);
+  --bg-card-locked: var(--color-petal);
+  --text-body: var(--color-plum);
+  --text-muted: var(--color-mauve-ink);
+  --text-link: var(--color-mauve-ink);
+  --accent: var(--color-mauve);
+  --accent-soft: var(--color-rose);
+  --focus-ring: var(--color-mauve-ink);
+  --border-soft: rgb(181 119 154 / 0.25); /* mauve at 25% — never hard black borders */
+
+  /* ---- Typography ---- */
+  --font-display: "Cormorant Garamond", "Georgia", serif;  /* use italic */
+  --font-letter: "Caveat", "Segoe Print", cursive;          /* letter body, ≥ 20px only */
+  --font-ui: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --text-xs: 0.875rem;   /* 14px — UI captions only */
+  --text-sm: 1rem;       /* 16px — UI minimum for body copy */
+  --text-md: 1.125rem;   /* 18px */
+  --text-letter: 1.5rem; /* 24px — Caveat body size (never below 1.25rem / 20px) */
+  --text-lg: 1.5rem;
+  --text-xl: 2rem;
+  --text-display: clamp(2.25rem, 8vw, 3.25rem);
+  --leading-ui: 1.5;
+  --leading-letter: 1.45;
+
+  /* ---- Shape ---- */
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 24px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* ---- Shadows (pink-tinted, never grey/black) ---- */
+  --shadow-sm: 0 2px 8px rgb(181 119 154 / 0.14);
+  --shadow-md: 0 6px 20px rgb(181 119 154 / 0.18), 0 2px 6px rgb(248 183 204 / 0.25);
+  --shadow-lg: 0 14px 40px rgb(181 119 154 / 0.22), 0 4px 12px rgb(248 183 204 / 0.3);
+
+  /* ---- Spacing (4px base) ---- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --gutter: var(--space-4);          /* page side padding on phones */
+  --content-max: 34rem;              /* reading column max width */
+  --tap-min: 44px;                   /* minimum touch target */
+
+  /* ---- Motion ---- */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+  --duration-base: 280ms;
+  --duration-slow: 520ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}
