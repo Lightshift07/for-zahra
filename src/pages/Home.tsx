@@ -9,14 +9,6 @@ import { useNow } from '../lib/useNow'
 import { usePageTitle } from '../lib/usePageTitle'
 import './Home.css'
 
-function greeting(now: Date): string {
-  const h = now.getHours()
-  if (h < 5) return 'Hello, night owl'
-  if (h < 12) return 'Good morning, my love'
-  if (h < 18) return 'Good afternoon, my love'
-  return 'Good evening, my love'
-}
-
 export default function Home() {
   usePageTitle()
   const now = useNow()
@@ -30,7 +22,6 @@ export default function Home() {
 
   return (
     <main className="page home">
-      <p className="home__greeting">{greeting(now)}</p>
       <PageHeader title="For Zahra" intro="Little letters, for whenever you need them." />
 
       {fresh ? (

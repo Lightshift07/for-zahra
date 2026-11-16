@@ -56,13 +56,13 @@ src/
   content/
     schema.ts                letter types + PURE validation rules. Runs at build time; the browser imports its TYPES only.
     index.ts                 the app's content API: whenLetters, onLetters, getLetter(), mediaUrl(), renderBody()
-    unlock.ts                date-unlock rules (isUnlocked, daysUntil)
+    unlock.ts                date-unlock rules, all in US Eastern time (isUnlocked, daysUntil, msUntilEasternMidnight)
     virtual-letters.d.ts     types for the generated `virtual:letters` module
   layouts/AppShell.tsx       wraps every route: tab bar, scroll restoration, focus-to-<h1> on navigation
   pages/                     route components (+ co-located .css): Home, OpenWhen, OpenOn, LetterPage, NotFound, ContentProblems
   components/                shared components (+ co-located .css): LetterCard, Envelope, TabBar, PageHeader, InstallHint, Icons
   lib/
-    useNow.ts                current time, re-read every minute + when the app returns to foreground
+    useNow.ts                live current time: fires at 12am Eastern, every minute, and on return to foreground
     opened.ts                which letters were opened on this device (localStorage) → "New" badges
     format.ts                date + countdown wording ("25 December 2026", "39 days to go")
     usePageTitle.ts          sets document.title per route
@@ -88,7 +88,7 @@ Routes (data router via `createHashRouter`, so `<ScrollRestoration />` works):
 
 | Route | Page |
 |---|---|
-| `/` | Home: greeting, "something just unlocked" / "next to open" banner, tiles for both sections, one-time "add to home screen" tip (hidden when installed or dismissed) |
+| `/` | Home: title, "something just unlocked" / "next to open" banner, tiles for both sections, one-time "add to home screen" tip (hidden when installed or dismissed) |
 | `/open-when` | all Open When cards |
 | `/open-on` | all Open On cards, locked ones show date + countdown |
 | `/letter/:id` | one letter: sealed envelope → opening animation → letter (or a locked envelope). Letter ids are unique across both sections. |
@@ -175,14 +175,15 @@ Implemented in `src/content/unlock.ts`. Don't duplicate this logic anywhere else
 | School finished | `null` (TBD) | `on/school-finished.md` |
 
 Yearly occasions get a new file per year (e.g. `birthday-2028.md`) instead of reusing old ones, so past letters stay readable.
-- `unlockDate: YYYY-MM-DD` unlocks at **00:00 in the viewer's local time** on that day. Christmas opens at midnight wherever Zahra's phone is.
+- **Everything runs on US Eastern time** (`America/New_York`, DST-aware), whatever time zone the phone is in. `unlockDate: YYYY-MM-DD` unlocks at **00:00 Eastern** on that day, and every countdown drops by one at that same moment.
 - `unlockDate: null` means **date TBD**. It always stays locked and shows "Date to be revealed" (no countdown). Use it for any occasion whose date is not known yet (currently only "school finished").
 - A locked card shows its title, teaser and the date or countdown, but **never** any body text, photos or voice note.
 - Once unlocked, a letter stays open forever.
 - Countdown: `daysUntil()` gives whole calendar days. 0 means today.
 - `npm run dev:unlocked` (`VITE_UNLOCK_ALL=true`) unlocks everything, **in dev only**. Production builds ignore it.
 - **Honest limitation:** locking is a UI promise, not security. Letter text ships in the JS bundle, so a determined person could read it early. Never put anything truly secret here. If real locking is ever wanted, it needs a backend, so ask first.
-- Components get the time from `useNow()` (`src/lib/useNow.ts`) and pass it to `isUnlocked(letter, now)` / `daysUntil(letter, now)`. Don't call `new Date()` in components. `useNow` re-checks every minute and when the app returns to the foreground, so a letter opens at midnight even if the app was left open.
+- Components get the time from `useNow()` (`src/lib/useNow.ts`) and pass it to `isUnlocked(letter, now)` / `daysUntil(letter, now)`. Don't call `new Date()` in components. Counters are live: `useNow` fires exactly at the next 12:00am Eastern, also re-checks every minute as a safety net, and refreshes when the app returns to the foreground. A letter opens and its countdown ends at midnight Eastern even if the app was left open.
+- Calendar dates are displayed with `formatDate()` (`src/lib/format.ts`), which never shifts a date across time zones: `2026-12-25` always shows as 25 December 2026.
 - A letter opened on this device is remembered in localStorage (`src/lib/opened.ts`). Unlocked-but-unread Open On letters get a "New" badge and the home-screen banner. If storage is unavailable, everything still works without the badges.
 
 ## 7. Design rules

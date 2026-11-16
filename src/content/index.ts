@@ -10,7 +10,7 @@ import { contentProblems, media, onLetters, whenLetters } from 'virtual:letters'
 import type { Letter } from './schema'
 
 export type { Letter, OnLetter, WhenLetter, Photo, Section } from './schema'
-export { isUnlocked, daysUntil, unlockMoment } from './unlock'
+export { isUnlocked, daysUntil, easternToday, msUntilEasternMidnight, UNLOCK_TIME_ZONE } from './unlock'
 
 /** Already sorted by `order`, then title. */
 export { whenLetters, onLetters, contentProblems }

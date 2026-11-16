@@ -1,10 +1,10 @@
-import { unlockMoment } from '../content'
-
-const longDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+// Format the calendar date itself (no time zone shifting): "2026-12-25" is always 25 December.
+const longDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
 
 /** "2026-12-25" → "25 December 2026" */
 export function formatDate(isoDate: string): string {
-  return longDate.format(unlockMoment(isoDate))
+  const [y, m, d] = isoDate.split('-').map(Number)
+  return longDate.format(Date.UTC(y, m - 1, d))
 }
 
 /** Friendly countdown from daysUntil(): null → TBD. */
