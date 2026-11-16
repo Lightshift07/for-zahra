@@ -22,7 +22,7 @@ export default function Home() {
 
   return (
     <main className="page home">
-      <PageHeader title="For Zahra" intro="Little letters, for whenever you need them." />
+      <PageHeader kicker="A few letters for…" title="Zahra" intro="Little letters, for whenever you need them." />
 
       {fresh ? (
         <Link to={`/letter/${fresh.id}`} className="home__banner home__banner--new">

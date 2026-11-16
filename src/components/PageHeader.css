@@ -11,6 +11,18 @@
   line-height: 1.05;
 }
 
+/* mauve-ink on cream 6.82 */
+.page-header__kicker {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-style: normal;
+  font-weight: 700;
+  line-height: var(--leading-ui);
+}
+
 /* Short handwritten flourish — Caveat at 24px, never smaller. */
 .page-header__intro {
   margin: var(--space-2) 0 0;

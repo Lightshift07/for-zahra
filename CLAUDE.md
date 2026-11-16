@@ -88,7 +88,7 @@ Routes (data router via `createHashRouter`, so `<ScrollRestoration />` works):
 
 | Route | Page |
 |---|---|
-| `/` | Home: title, "something just unlocked" / "next to open" banner, tiles for both sections, one-time "add to home screen" tip (hidden when installed or dismissed) |
+| `/` | Home: "A few letters for… Zahra" title, "something just unlocked" / "next to open" banner, tiles for both sections, one-time "add to home screen" tip (hidden when installed or dismissed) |
 | `/open-when` | all Open When cards |
 | `/open-on` | all Open On cards, locked ones show date + countdown |
 | `/letter/:id` | one letter: sealed envelope → opening animation → letter (or a locked envelope). Letter ids are unique across both sections. |
