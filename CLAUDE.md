@@ -61,7 +61,7 @@ src/
     virtual-letters.d.ts     types for the generated `virtual:letters` module
   layouts/AppShell.tsx       wraps every route: tab bar, preview label, auto-update, scroll restoration, focus-to-<h1> on navigation
   pages/                     route components (+ co-located .css): Home, OpenWhen, OpenOn, LetterPage, NotFound, ContentProblems
-  components/                shared components (+ co-located .css): LetterCard, Envelope, TabBar, PageHeader, TogetherCounter, InstallHint, Icons
+  components/                shared components (+ co-located .css): LetterCard, Envelope, WaxSeal, TabBar, PageHeader, TogetherCounter, InstallHint, Icons
     PickForMe.tsx            "Pick one for me" shuffle on the Open When page
     effects/                 ThemeEffects (snow / hearts / fireworks / streamers / sparkles overlay) + corner decorations: Snowman, PartyHat, PartyGarland, Crown, AnniversaryCandle, GraduationGown
   lib/
@@ -74,6 +74,7 @@ src/
     together.ts              TOGETHER_SINCE (2026-06-30) + days/months together (Eastern calendar days) + yearsTogetherOn() for the candle
     autoUpdate.ts            registers sw.js; useAutoUpdate() reloads into a newer deploy (never mid-letter)
     useScrollRestoration.ts  new page → top; back → previous position (per history entry, survives reloads)
+    personal.ts              SEAL_INITIALS ("A" & "Z") pressed into the wax seal
   globals.d.ts               declares __APP_VERSION__
   styles/
     tokens.css               ALL design tokens. The single source of colour/type/radius/shadow/spacing.
@@ -286,7 +287,8 @@ Prefer the semantic tokens (`--bg-card`, `--text-body`, `--text-link`, …) over
 - Stages: `sealed` (envelope + "Tap to open" button, the first time a letter is opened) → `opening` → `open` (the full letter). On re-reads the animation plays automatically, with no tap.
 - The sequence is: wax seal pops, flap swings open, letter slides up, hearts float, envelope fades, then the letter rises in. Every step is a fraction of the single token `--envelope-duration` (1900ms). The swap to the full letter happens at `LETTER_SWAP` (0.92) of it. Change the speed only via that token. The step timings are documented at the top of `Envelope.css`.
 - Under reduced motion the token is 0ms, so tapping opens the letter instantly.
-- Locked Open On letters show the same envelope with a lock seal, not interactive.
+- **Wax seal** (`components/WaxSeal.tsx`): a melted-wax disc in mauve-ink with a pressed ring and our initials **A&Z** (cream on mauve-ink, 6.82:1), on the sealed envelope and at the top of every open letter. Change the initials only in `src/lib/personal.ts`.
+- Locked Open On letters show the same envelope with a plain plum **lock** seal instead of the initials, not interactive.
 - The envelope is `aria-hidden`. The button text, the "Opening your letter…" status and the focus move to the letter's `<h1>` carry the meaning.
 
 ## 8. Accessibility rules

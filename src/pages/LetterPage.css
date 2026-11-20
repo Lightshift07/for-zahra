@@ -69,14 +69,10 @@
   position: absolute;
   top: 0;
   left: 50%;
-  display: grid;
-  place-items: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  border-radius: var(--radius-pill);
-  background: var(--accent-soft);
-  color: var(--bg-paper);
-  box-shadow: var(--shadow-md);
+  z-index: 1;
+  width: 3.5rem;
+  height: 3.5rem;
+  filter: var(--shadow-drop);
   transform: translate(-50%, -50%);
 }
 

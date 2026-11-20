@@ -1,0 +1,41 @@
+.wax-seal {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Wax: mauve-ink so the cream initials read clearly (cream on mauve-ink 6.82:1). */
+.wax-seal__wax {
+  fill: var(--color-mauve-ink);
+  stroke: var(--color-plum);
+  stroke-width: 0.8;
+}
+
+/* The pressed ring left by the stamp. */
+.wax-seal__ring {
+  fill: none;
+  stroke: var(--color-mauve);
+  stroke-width: 1.4;
+  opacity: 0.9;
+}
+
+/* A soft highlight, so it looks glossy rather than flat. */
+.wax-seal__shine {
+  fill: var(--color-snow);
+  opacity: 0.16;
+}
+
+.wax-seal__initials {
+  fill: var(--color-cream);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.02em;
+}
+
+.wax-seal__amp {
+  font-size: 14px;
+  fill: var(--color-rose);
+}

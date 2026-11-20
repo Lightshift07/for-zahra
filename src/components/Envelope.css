@@ -84,7 +84,7 @@
   filter: var(--shadow-drop);
 }
 
-/* Wax seal on the flap's tip. Mauve here is decorative (non-text). */
+/* Wax seal on the flap's tip, pressed with our initials (WaxSeal.tsx). */
 .envelope__seal {
   position: absolute;
   top: 57%;
@@ -92,17 +92,21 @@
   z-index: 5;
   display: grid;
   place-items: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  border-radius: var(--radius-pill);
-  background: var(--accent);
-  color: var(--bg-paper);
-  box-shadow: var(--shadow-md);
+  width: 3.5rem;
+  height: 3.5rem;
+  filter: var(--shadow-drop);
   transform: translate(-50%, -50%);
 }
 
-.envelope--locked .envelope__seal {
-  background: var(--color-mauve-ink);
+/* Locked letters keep a plain lock seal, so "not yet" is obvious at a glance. */
+.envelope__seal--locked {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-plum);
+  color: var(--bg-paper);
+  box-shadow: var(--shadow-md);
+  filter: none;
 }
 
 /* Gentle idle float while sealed — only for people who haven't asked for less motion. */

@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { HeartIcon, LockIcon } from './Icons'
+import WaxSeal from './WaxSeal'
 import './Envelope.css'
 
 export type EnvelopeState = 'sealed' | 'opening' | 'locked'
@@ -36,7 +37,9 @@ export default function Envelope({ state, label = 'For you' }: { state: Envelope
       <svg className="envelope__flap" viewBox="0 0 100 60" preserveAspectRatio="none">
         <path d="M0 7 Q0 0 7 0 L93 0 Q100 0 100 7 L55 55 Q50 60 45 55 Z" />
       </svg>
-      <span className="envelope__seal">{state === 'locked' ? <LockIcon size={20} /> : <HeartIcon size={22} />}</span>
+      <span className={`envelope__seal${state === 'locked' ? ' envelope__seal--locked' : ''}`}>
+        {state === 'locked' ? <LockIcon size={20} /> : <WaxSeal />}
+      </span>
       {state === 'opening' && (
         <div className="envelope__hearts">
           {HEARTS.map(([x, d, size], i) => (

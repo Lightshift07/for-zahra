@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import Envelope from '../components/Envelope'
+import WaxSeal from '../components/WaxSeal'
 import AnniversaryCandle from '../components/effects/AnniversaryCandle'
 import Crown from '../components/effects/Crown'
 import GraduationGown from '../components/effects/GraduationGown'
@@ -8,7 +9,7 @@ import PartyGarland from '../components/effects/PartyGarland'
 import PartyHat from '../components/effects/PartyHat'
 import Snowman from '../components/effects/Snowman'
 import ThemeEffects from '../components/effects/ThemeEffects'
-import { ArrowLeftIcon, HeartIcon } from '../components/Icons'
+import { ArrowLeftIcon } from '../components/Icons'
 import { daysUntil, getLetter, isUnlocked, mediaUrl, renderBody, type Letter, type Theme } from '../content'
 import { countdownLabel, formatDate } from '../lib/format'
 import { envelopeDurationMs } from '../lib/motion'
@@ -182,7 +183,7 @@ function LetterView({ letter }: { letter: Letter }) {
           </>
         )}
         <span className="letter__seal">
-          <HeartIcon size={22} />
+          <WaxSeal />
         </span>
         <p className="letter__kicker">{kicker}</p>
         <h1 id="letter-title" ref={headingRef} className="letter__title">
